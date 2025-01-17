@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -12,7 +14,21 @@ class ReportController extends Controller
      */
     public function index()
     {
-        return view('layout.admin.insert');
+        $report = Report::all();
+        return view('layout.admin.insert', compact('report'));
+    }
+
+    public function view()
+    {
+        $role = Auth::user()->role->name;
+        // dd($role);
+        if ($role == 'User') {
+            // dd('roleuser');
+            $report = Report::where('id_user', Auth::user()->id)->get();
+        } else {
+            $report = Report::get();
+        }
+        return view('layout.admin.rekap', compact('report'));
     }
 
     /**
@@ -28,7 +44,28 @@ class ReportController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // input
+        $tanggal = Carbon::now()->format('Y-m-d');
+        $id_user = $request->id_user;
+        $shalat_wajib = $request->shalat_wajib;
+        $qiyamul_lail = $request->qiyamul_lail;
+        $tilawah = $request->tilawah;
+        $duha = $request->duha;
+
+
+
+        // proses
+        $simpan = Report::create([
+            'tanggal' => $tanggal,
+            'id_user' => $id_user,
+            'shalat_wajib' => $shalat_wajib,
+            'qiyamul_lail' => $qiyamul_lail,
+            'tilawah' => $tilawah,
+            'duha' => $duha,
+        ]);
+
+        // output
+        return redirect('/report');
     }
 
     /**

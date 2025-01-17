@@ -18,6 +18,12 @@
             <span>Dashboard</span></a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('/users') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Users</span></a>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -35,7 +41,7 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="#">Report</a>
+                <a class="collapse-item" href="{{ url('/report') }}">Report</a>
                 <a class="collapse-item" href="{{ url('/insert') }}">Insert</a>
             </div>
         </div>

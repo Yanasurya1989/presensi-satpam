@@ -20,48 +20,49 @@
                         {{ session('success') }}
                     </div>
                 @endif
-                <form action="#" method="POST" enctype="multipart/form-data">
+                <form action="{{ url('/report/store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
+                        <input type="hidden" name="id_user" value="{{ Auth::user()->id }}">
                         <label for="exampleInputEmail">Shalat Wajib</label>
-                        <select name="category_id" id="category" class="form-control mb-4" required>
+                        <select name="shalat_wajib" id="category" class="form-control mb-4" required>
                             <option value="">-- Shalat wajid dalam sehari --</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
-                            <option value="3">4</option>
-                            <option value="3">5</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
                         </select>
                         <label for="exampleInputEmail">Qiyamul Lail</label>
-                        <select name="category_id" id="category" class="form-control mb-4" required>
+                        <select name="qiyamul_lail" id="category" class="form-control mb-4" required>
                             <option value="">-- Jumlah raka'at --</option>
-                            <option value="1">2</option>
-                            <option value="2">4</option>
-                            <option value="3">6</option>
-                            <option value="3">8</option>
-                            <option value="3">11</option>
+                            <option value="2">2</option>
+                            <option value="4">4</option>
+                            <option value="6">6</option>
+                            <option value="8">8</option>
+                            <option value="11">11</option>
                         </select>
                         <label for="exampleInputEmail">Tilawah</label>
-                        <select name="category_id" id="category" class="form-control mb-4" required>
+                        <select name="tilawah" id="category" class="form-control mb-4" required>
                             <option value="">-- Jumlah halaman --</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
-                            <option value="3">4</option>
-                            <option value="3">5</option>
-                            <option value="3">6</option>
-                            <option value="3">7</option>
-                            <option value="3">8</option>
-                            <option value="3">9</option>
-                            <option value="3">10</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
                         </select>
                         <label for="exampleInputEmail">Shalat Duha</label>
-                        <select name="category_id" id="category" class="form-control mb-4" required>
+                        <select name="duha" id="category" class="form-control mb-4" required>
                             <option value="">-- Jumlah raka'at --</option>
-                            <option value="1">2</option>
-                            <option value="2">4</option>
-                            <option value="3">6</option>
-                            <option value="3">8</option>
+                            <option value="2">2</option>
+                            <option value="4">4</option>
+                            <option value="6">6</option>
+                            <option value="8">8</option>
                         </select>
                     </div>
                     <div class="modal-footer">
