@@ -43,6 +43,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <a class="collapse-item" href="{{ url('/report') }}">Report</a>
                 <a class="collapse-item" href="{{ url('/insert') }}">Insert</a>
+                <a class="collapse-item" href="{{ url('/report-admin') }}">Admin</a>
             </div>
         </div>
     </li>

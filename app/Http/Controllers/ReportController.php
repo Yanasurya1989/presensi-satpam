@@ -18,6 +18,12 @@ class ReportController extends Controller
         return view('layout.admin.insert', compact('report'));
     }
 
+    public function admin()
+    {
+        $report = Report::all();
+        return view('layout.admin.rekap_admin', compact('report'));
+    }
+
     public function view()
     {
         $role = Auth::user()->role->name;

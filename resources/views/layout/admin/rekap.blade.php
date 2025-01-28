@@ -12,9 +12,9 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                         <thead>
-                            <tr>
+                            <tr class="text-center">
                                 <th>Tanggal</th>
                                 <th>Nama</th>
                                 <th>Shalat Wjib</th>
@@ -25,9 +25,18 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php
+                            $total_shalat_wajib = 0;
+                            $total_qiyamul_lail = 0;
+                            $total_tilawah = 0;
+                            $total_duha = 0;
+                            ?>
                             @foreach ($report as $data)
+                                {{ $total_shalat_wajib += $data['shalat_wajib'] }}
+                                {{ $total_qiyamul_lail += $data['qiyamul_lail'] }}
+                                {{ $total_tilawah += $data['tilawah'] }}
+                                {{ $total_duha += $data['duha'] }}
                                 <tr>
-
                                     <td>{{ $data['tanggal'] }}</td>
                                     <td>{{ $data->user->name }}</td>
                                     <td>{{ $data['shalat_wajib'] }}</td>
@@ -43,8 +52,14 @@
                                     </td>
                                 </tr>
                             @endforeach
-
                         </tbody>
+                        <tfoot>
+                            <th colspan="2" class="text-center">Jumlah</th>
+                            <th>{{ $total_shalat_wajib }}</th>
+                            <th>{{ $total_qiyamul_lail }}</th>
+                            <th>{{ $total_tilawah }}</th>
+                            <th>{{ $total_duha }}</th>
+                        </tfoot>
                     </table>
                 </div>
             </div>

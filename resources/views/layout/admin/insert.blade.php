@@ -27,6 +27,7 @@
                         <label for="exampleInputEmail">Shalat Wajib</label>
                         <select name="shalat_wajib" id="category" class="form-control mb-4" required>
                             <option value="">-- Shalat wajid dalam sehari --</option>
+                            <option value="1">0</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -36,6 +37,7 @@
                         <label for="exampleInputEmail">Qiyamul Lail</label>
                         <select name="qiyamul_lail" id="category" class="form-control mb-4" required>
                             <option value="">-- Jumlah raka'at --</option>
+                            <option value="2">0</option>
                             <option value="2">2</option>
                             <option value="4">4</option>
                             <option value="6">6</option>
@@ -45,6 +47,7 @@
                         <label for="exampleInputEmail">Tilawah</label>
                         <select name="tilawah" id="category" class="form-control mb-4" required>
                             <option value="">-- Jumlah halaman --</option>
+                            <option value="1">0</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -59,6 +62,7 @@
                         <label for="exampleInputEmail">Shalat Duha</label>
                         <select name="duha" id="category" class="form-control mb-4" required>
                             <option value="">-- Jumlah raka'at --</option>
+                            <option value="2">0</option>
                             <option value="2">2</option>
                             <option value="4">4</option>
                             <option value="6">6</option>
