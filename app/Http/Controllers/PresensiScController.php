@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rekap;
-use App\Models\User;
+use App\Models\PresensiSc;
 use Illuminate\Http\Request;
 
-class Rekapcontroller extends Controller
+class PresensiScController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $rekap = User::all();
-        $userIds = User::pluck('id')->toArray();
-        return view('layout.admin.rekap_admin', compact('rekap', 'userIds'));
+        return view('layout.Presensi.sc');
     }
 
     /**
@@ -37,7 +34,7 @@ class Rekapcontroller extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Rekap $rekap)
+    public function show(PresensiSc $presensiSc)
     {
         //
     }
@@ -45,7 +42,7 @@ class Rekapcontroller extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Rekap $rekap)
+    public function edit(PresensiSc $presensiSc)
     {
         //
     }
@@ -53,7 +50,7 @@ class Rekapcontroller extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Rekap $rekap)
+    public function update(Request $request, PresensiSc $presensiSc)
     {
         //
     }
@@ -61,7 +58,7 @@ class Rekapcontroller extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Rekap $rekap)
+    public function destroy(PresensiSc $presensiSc)
     {
         //
     }

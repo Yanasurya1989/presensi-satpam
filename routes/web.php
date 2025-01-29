@@ -5,7 +5,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\KehadiranController;
+use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\PresensiScController;
 use App\Http\Controllers\Rekapcontroller;
+use App\Models\Kehadiran;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
@@ -30,6 +34,17 @@ Route::post('/user/update/{user}', [UserController::class, 'update']);
 // Report admin
 Route::get('/report-admin', [Rekapcontroller::class, 'index']);
 
+// Presensi SC
+Route::get('/presensi-sc', [PresensiScController::class, 'index']);
+Route::get('/presensi-sc', [KehadiranController::class, 'index']);
+Route::post('/simpan-masuk', [KehadiranController::class, 'store']);
+
+Route::get('/presensi-keluar', [KehadiranController::class, 'out_sc']);
+Route::post('/presensi-keluar/proses', [KehadiranController::class, 'outsc']);
+Route::get('/rekap_presensi', [KehadiranController::class, 'rekap_presensi']);
+
+Route::get('/filter-data', [KehadiranController::class, 'halamanrekap']);
+Route::get('filter-data/{tglawal}/{tglakhir}', [KehadiranController::class, 'tampildatakeseluruhan']);
 
 //presensi handling
 Route::post('/submit', [AjaxController::class, 'submit'])->name('ajax.submit');

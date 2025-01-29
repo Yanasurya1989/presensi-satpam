@@ -10,9 +10,7 @@
     <meta name="author" content="">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-
     <title>Mutaba'ah Yaumiyah</title>
-
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -24,10 +22,32 @@
     <link href="{{ asset('admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
+    {{-- Jam --}}
+    <script src="{{ asset('Js/jam.js') }}"></script>
+    <style>
+        #watch {
+            color: rgb(252, 150, 65);
+            position: absolute;
+            z-index: 1;
+            height: 40px;
+            width: 700px;
+            overflow: show;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            font-size: 10vw;
+            -webkit-text-stroke: 3px rgb(210, 65, 36);
+            text-shadow: 4px 4px 10px rgba(210, 65, 36, 0.4),
+                4px 4px 20px rgba(210, 45, 26, 0.4),
+                4px 4px 30px rgba(210, 25, 16, 0.4),
+                4px 4px 40px rgba(210, 15, 06, 0.4);
+        }
+    </style>
 </head>
 
-<body id="page-top">
+<body id="page-top" onload="realtimeClock()">
 
     <!-- Page Wrapper -->
     <div id="wrapper">
@@ -97,6 +117,9 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('admin/js/sb-admin-2.min.js') }}"></script>
+
+    {{-- jam --}}
+    <script src="{{ asset('admin/js/jam.js') }}"></script>
 
 </body>
 

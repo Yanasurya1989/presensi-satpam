@@ -15,12 +15,16 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('/') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
+            {{-- <i class="fas fa-solid fa-house"></i> --}}
             <span>Dashboard</span></a>
     </li>
 
+    <hr class="sidebar-divider my-0">
+
     <li class="nav-item">
         <a class="nav-link" href="{{ url('/users') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            {{-- <i class="fas fa-fw fa-tachometer-alt"></i> --}}
+            <i class="fas fa-solid fa-user"></i>
             <span>Users</span></a>
     </li>
 
@@ -44,6 +48,21 @@
                 <a class="collapse-item" href="{{ url('/report') }}">Report</a>
                 <a class="collapse-item" href="{{ url('/insert') }}">Insert</a>
                 <a class="collapse-item" href="{{ url('/report-admin') }}">Admin</a>
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+            aria-expanded="true" aria-controls="collapseTwo">
+            {{-- <i class="fas fa-fw fa-cog"></i> --}}
+            <i class="fas fa-sharp-duotone fa-regular fa-clock"></i>
+            <span>Presensi</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" href="{{ url('/presensi-sc') }}">Presensi Masuk</a>
+                <a class="collapse-item" href="{{ url('/presensi-keluar') }}">Presensi Pulang</a>
+                <a class="collapse-item" href="{{ url('/filter-data') }}">Rekap Presensi</a>
             </div>
         </div>
     </li>

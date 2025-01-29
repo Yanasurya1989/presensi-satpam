@@ -21,7 +21,7 @@
                                 <th>Qiyamul Lail</th>
                                 <th>Tilawah</th>
                                 <th>Duha</th>
-                                <th>Aksi</th>
+                                {{-- <th>Aksi</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -43,13 +43,13 @@
                                     <td>{{ $data['qiyamul_lail'] }}</td>
                                     <td>{{ $data['tilawah'] }}</td>
                                     <td>{{ $data['duha'] }}</td>
-                                    <td>
+                                    {{-- <td>
                                         <a href="{{ url('/study/delete', encrypt($data['id'])) }}" class="btn btn-danger"
                                             onclick="return confirm('Yakin akan dihapus?')">Hapus</a>
 
                                         <a href="{{ url('/study/delete', encrypt($data['id'])) }}" class="btn btn-warning"
                                             onclick="return confirm('Yakin akan dihapus?')">Update</a>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>

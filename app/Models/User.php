@@ -19,11 +19,23 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        // 'user_id',
         'email',
         'password',
         'foto',
-        'role_id'
+        'role_id',
+        'rekap_id'
     ];
+
+    /**
+     * Get the user that owns the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function rekap()
+    {
+        return $this->belongsTo(Rekap::class, 'id_user', 'id');
+    }
 
     /**
      * Get the user that owns the User
@@ -34,6 +46,7 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -56,5 +69,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function kehadiran()
+    {
+        return $this->hasMany(Kehadiran::class);
     }
 }

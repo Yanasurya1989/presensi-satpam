@@ -26,7 +26,7 @@
                             @foreach ($rekap as $data)
                                 <tr>
                                     <td>{{ $data->name }}</td>
-                                    <td></td>
+                                    <td>{{ $data->qiyamul_lail }}</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
