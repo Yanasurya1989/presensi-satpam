@@ -1,16 +1,18 @@
 <?php
 
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\AjaxController;
-use App\Http\Controllers\KehadiranController;
-use App\Http\Controllers\PresensiController;
-use App\Http\Controllers\PresensiScController;
-use App\Http\Controllers\Rekapcontroller;
 use App\Models\Kehadiran;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Rekapcontroller;
+use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\KehadiranController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\PresensiScController;
 
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate']);
@@ -45,6 +47,18 @@ Route::get('/rekap_presensi', [KehadiranController::class, 'rekap_presensi']);
 
 Route::get('/filter-data', [KehadiranController::class, 'halamanrekap']);
 Route::get('filter-data/{tglawal}/{tglakhir}', [KehadiranController::class, 'tampildatakeseluruhan']);
+
+Route::get('/jam', [KehadiranController::class, 'viewjam']);
+Route::post('/save-timestamp', [KehadiranController::class, 'create'])->name('save.timestamp');
+
+Route::get('/shifts', [ShiftController::class, 'index']);
+Route::get('/shiftsforschedule', [ShiftController::class, 'siftforschedule']);
+
+// Attendance
+Route::middleware('auth:sanctum')->post('/attendance', [AttendanceController::class, 'store']);
+Route::middleware('auth:sanctum')->get('/attendance/report', [AttendanceController::class, 'report']);
+
+Route::middleware(['auth:sanctum', 'admin'])->get('/admin/attendance', [AdminController::class, 'index']);
 
 //presensi handling
 Route::post('/submit', [AjaxController::class, 'submit'])->name('ajax.submit');

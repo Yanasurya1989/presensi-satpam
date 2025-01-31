@@ -27,6 +27,11 @@ class User extends Authenticatable
         'rekap_id'
     ];
 
+    public function shifts()
+    {
+        return $this->belongsToMany(Shift::class, 'user_shifts')->withPivot('shift_date')->withTimestamps();
+    }
+
     /**
      * Get the user that owns the User
      *

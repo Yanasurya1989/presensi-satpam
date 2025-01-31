@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance;
+use App\Models\User;
+use App\Models\Shift;
 use Illuminate\Http\Request;
-use App\Models\Administrator;
 
-class AdminController extends Controller
+class ShiftController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('layout.admin.index');
-        return response()->json(Attendance::with('user')->orderBy('created_at', 'desc')->get());
+        $users = User::with('shifts')->get();
+        return view('shifts.index', compact('users'));
+    }
+
+    public function siftforschedule()
+    {
+        $shifts = Shift::all();
+        return view('shifts.shiftforschedule', compact('shifts'));
     }
 
     /**
@@ -36,7 +42,7 @@ class AdminController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Administrator $administrator)
+    public function show(Shift $shift)
     {
         //
     }
@@ -44,7 +50,7 @@ class AdminController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Administrator $administrator)
+    public function edit(Shift $shift)
     {
         //
     }
@@ -52,7 +58,7 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Administrator $administrator)
+    public function update(Request $request, Shift $shift)
     {
         //
     }
@@ -60,7 +66,7 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Administrator $administrator)
+    public function destroy(Shift $shift)
     {
         //
     }

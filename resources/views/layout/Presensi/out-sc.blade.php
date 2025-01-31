@@ -31,9 +31,17 @@
                                     </center>
                                 </div>
                                 <center>
+                                    <div class="col mb-3">
+                                        <input type="hidden" id="lokasi">
+                                        {{-- <input type="text" id="lokasi"> --}}
+                                        <div class="webcam-capture"></div>
+                                    </div>
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-danger">Klik Untuk Presensi
                                             Keluar</button>
+                                    </div>
+                                    <div class="col">
+                                        <div id="map"></div>
                                     </div>
                                 </center>
                             </form>
@@ -48,3 +56,41 @@
 @endsection
 
 <script src="{{ asset('admin/js/scriptkuring.js') }}"></script>
+@push('myscript')
+    <script>
+        Webcam.set({
+            height: 280,
+            width: 440,
+            image_format: 'jpeg',
+            jpeg_quality: 80
+        });
+
+        Webcam.attach('.webcam-capture')
+
+        var lokasi = document.getElementById('lokasi');
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+
+        }
+
+        function successCallback(position) {
+            lokasi.value = position.coords.latitude + "," + position.coords.longitude;
+            var map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 13);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+            var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
+            var circle = L.circle([position.coords.latitude, position.coords.longitude], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 500
+            }).addTo(map);
+        }
+
+        function errorCallback() {
+
+        }
+    </script>
+@endpush

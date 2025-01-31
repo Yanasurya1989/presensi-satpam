@@ -21,6 +21,19 @@
     <!-- Custom styles for this template-->
     <link href="{{ asset('admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+
+    {{-- leaflet --}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 180px;
+        }
+    </style>
+
 
     {{-- Jam --}}
     <script src="{{ asset('Js/jam.js') }}"></script>
@@ -121,6 +134,12 @@
     {{-- jam --}}
     <script src="{{ asset('admin/js/jam.js') }}"></script>
 
+    {{-- Geolocation --}}
+    <script src="{{ asset('admin/js/geolocationapi.js') }}"></script>
+    <script src="{{ asset('admin/js/rekap.js') }}"></script>
+    <script src="{{ asset('admin/js/tampilkanadmin.js') }}"></script>
+
+    @stack('myscript')
 </body>
 
 </html>

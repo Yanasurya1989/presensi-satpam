@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DateTime;
 use DateTimeZone;
 use App\Models\Kehadiran;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,12 +40,19 @@ class KehadiranController extends Controller
         return view('layout.Presensi.rekap', compact('presensi'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function viewjam()
+    {
+        $jam = User::all();
+        return view('layout.Presensi.tes', compact('jam'));
+    }
+
     public function create()
     {
-        //
+        Kehadiran::create([
+            'jam_masuk' => now()
+        ]);
+
+        return redirect()->back()->with('success', 'atos mang');
     }
 
     /**

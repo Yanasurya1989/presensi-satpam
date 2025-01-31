@@ -24,22 +24,11 @@
                                 @csrf
                                 <input type="hidden" name="id_user" value="{{ Auth::user()->id }}">
                                 <div class="form-group">
-                                    <center>
-                                        <label id="clock"
-                                            style="font-size: 100px; color: #0A77DE; -webkit-text-stroke: 3px #00ACFE;
-                                                    text-shadow: 4px 4px 10px #36D6FE,
-                                                    4px 4px 20px #36D6FE,
-                                                    4px 4px 30px#36D6FE,
-                                                    4px 4px 40px #36D6FE;">
-                                        </label>
-                                    </center>
+                                    <p>Presensi berhasil!</p>
+                                    <p>Waktu: {{ $attendance->created_at }}</p>
+                                    <img src="{{ asset('storage/' . $attendance->photo) }}" width="100">
+
                                 </div>
-                                <center>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary">Klik Untuk Presensi
-                                            Masuk</button>
-                                    </div>
-                                </center>
                             </form>
                         </div>
                     </div>

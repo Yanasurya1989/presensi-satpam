@@ -63,6 +63,8 @@
                 <a class="collapse-item" href="{{ url('/presensi-sc') }}">Presensi Masuk</a>
                 <a class="collapse-item" href="{{ url('/presensi-keluar') }}">Presensi Pulang</a>
                 <a class="collapse-item" href="{{ url('/filter-data') }}">Rekap Presensi</a>
+                <a class="collapse-item" href="{{ url('/shiftsforschedule') }}">Shift</a>
+                <a class="collapse-item" href="{{ url('/shifts') }}">Pembagian Shift</a>
             </div>
         </div>
     </li>
