@@ -8,15 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Kehadiran extends Model
 {
     use HasFactory;
-    protected $table = "kehadiran";
+    protected $table = "selfi_presensi";
     protected $primarykey = "id";
     protected $fillable = [
-        'id',
         'user_id',
-        'tanggal',
-        'jam_masuk',
-        'Jam_keluar',
-        'jam_kerja',
+        'tgl_presensi',
+        'jam_in',
+        'jam_out',
+        'poto_in',
+        'poto_out',
+        'created_at',
+        'updated_at'
     ];
 
     /**

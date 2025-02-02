@@ -37,7 +37,7 @@ Route::post('/user/update/{user}', [UserController::class, 'update']);
 Route::get('/report-admin', [Rekapcontroller::class, 'index']);
 
 // Presensi SC
-Route::get('/presensi-sc', [PresensiScController::class, 'index']);
+// Route::get('/presensi-sc', [PresensiScController::class, 'index']);
 Route::get('/presensi-sc', [KehadiranController::class, 'index']);
 Route::post('/simpan-masuk', [KehadiranController::class, 'store']);
 
@@ -59,6 +59,10 @@ Route::middleware('auth:sanctum')->post('/attendance', [AttendanceController::cl
 Route::middleware('auth:sanctum')->get('/attendance/report', [AttendanceController::class, 'report']);
 
 Route::middleware(['auth:sanctum', 'admin'])->get('/admin/attendance', [AdminController::class, 'index']);
+
+// Presensi image validation
+Route::post('/kehadiran/sendpresensi', [KehadiranController::class, 'sendpresensi']);
+Route::post('/presensi/kirim_hadir', [KehadiranController::class, 'kirim_hadir']);
 
 //presensi handling
 Route::post('/submit', [AjaxController::class, 'submit'])->name('ajax.submit');

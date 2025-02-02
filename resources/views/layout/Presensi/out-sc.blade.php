@@ -16,7 +16,8 @@
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col">
-                            <form action="{{ url('/presensi-keluar/proses') }}" method="POST">
+                            {{-- <form action="{{ url('/presensi-keluar/proses') }}" method="POST"> --}}
+                            <form action="#" method="POST">
                                 {{-- {{ csrf_field() }} --}}
                                 @csrf
                                 <div class="form-group">
@@ -37,12 +38,30 @@
                                         <div class="webcam-capture"></div>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-danger">Klik Untuk Presensi
-                                            Keluar</button>
+                                        <button class="btn btn-primary" id="take-absen">Klik Untuk Presensi
+                                            Masuk</button>
+                                        {{-- @if ($cek > 0)
+                                            <button class="btn btn-primary" id="take-absen">Klik Untuk Presensi
+                                                Masuk</button> --}}
+                                        {{-- <button type="submit" class="btn btn-danger" id="take-absen">Klik Untuk Presensi
+                                            Keluar</button> --}}
+                                        {{-- @else
+                                            <button class="btn btn-danger" id="take-absen">Klik Untuk Presensi
+                                                Pulang</button>
+                                        @endif --}}
                                     </div>
                                     <div class="col">
                                         <div id="map"></div>
                                     </div>
+
+                                    {{-- audio --}}
+                                    <audio id="notifikasi_in">
+                                        <source src="{{ asset('admin/sound/notifikasi-in.mp3') }}" type="audio/mpeg">
+                                    </audio>
+
+                                    <audio id="notifikasi_out">
+                                        <source src="{{ asset('admin/sound/notice-in.mp3') }}" type="audio/mpeg">
+                                    </audio>
                                 </center>
                             </form>
                         </div>
@@ -58,6 +77,9 @@
 <script src="{{ asset('admin/js/scriptkuring.js') }}"></script>
 @push('myscript')
     <script>
+        var notifikasi_in = document.getElementById('notifikasi_in');
+        var notifikasi_out = document.getElementById('notifikasi_out');
+
         Webcam.set({
             height: 280,
             width: 440,
@@ -82,8 +104,8 @@
             }).addTo(map);
             var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
             var circle = L.circle([position.coords.latitude, position.coords.longitude], {
-                color: 'red',
-                fillColor: '#f03',
+                color: 'blue',
+                fillColor: 'green',
                 fillOpacity: 0.5,
                 radius: 500
             }).addTo(map);
@@ -92,5 +114,48 @@
         function errorCallback() {
 
         }
+
+        $('#take-absen').click(function(e) {
+                    Webcam.snap(function(uri) {
+                        image = uri;
+                    });
+
+                    // alert(image);
+
+                    var lokasi = $('#lokasi').val();
+                    // alert(lokasi)
+                    $.ajax({
+                            type: 'POST',
+                            url: '/kehadiran/sendpresensi',
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                image: image,
+                                lokasi: lokasi
+                            },
+                            cache: false,
+                            success: function(respond) {
+                                var status = respond.split("|");
+                                if (status[0] == 'success') {
+                                    if (status[2] == 'in') {
+                                        notifikasi_in.play();
+                                    } else {
+                                        notifikasi_out.play();
+                                    }
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: status[1],
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    })
+                                    setTimeout("location.href='presensi-keluar'", 3000);
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'Sorry',
+                                        icon: 'error',
+                                    })
+                                }
+                            });
+                    });
     </script>
 @endpush
