@@ -52,7 +52,24 @@
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="{{ url('/naon') }}">Personal Report</a>
+                <?php
+                $role = Auth::user()->role->name;
+                ?>
+                @if ($role == 'User')
+                    <a class="collapse-item" href="{{ url('/report') }}">Personal Report</a>
+                @else
+                    <p style="display: none">Anda tidak bisa mengakses halaman ini</p>
+                @endif
+                {{-- selain user --}}
+                <?php
+                $role = Auth::user()->role->name;
+                ?>
+                @if ($role == 'Super Admin' || $role == 'Admin')
+                    <a class="collapse-item" href="{{ url('/admin_view') }}">Personal Report</a>
+                @else
+                    <p style="display: none">Anda tidak bisa mengakses halaman ini</p>
+                @endif
+
                 <a class="collapse-item" href="{{ url('/insert') }}">Insert</a>
                 <?php
                 $role = Auth::user()->role->name;
@@ -65,8 +82,10 @@
                 <?php
                 $role = Auth::user()->role->name;
                 ?>
-                @if ($role == 'Super Admin' || $role == 'Admin')
+                @if ($role == 'Super Admin')
+                    {{-- @if ($role == 'Super Admin' || $role == 'Admin') --}}
                     <a class="collapse-item" href="{{ url('/report') }}">Daily Check</a>
+                    <a class="collapse-item" href="{{ url('/naon') }}">All User Report</a>
                 @else
                     <p style="display: none">Anda tidak bisa mengakses halaman ini</p>
                 @endif
@@ -76,7 +95,7 @@
     <?php
     $role = Auth::user()->role->name;
     ?>
-    @if ($role == 'Super Admin' || $role == 'Admin')
+    @if ($role == 'Super Admin')
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                 aria-expanded="true" aria-controls="collapseTwo">

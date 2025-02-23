@@ -38,6 +38,12 @@
                                 {{ $total_duha += $data['duha'] }}
                                 <tr>
                                     <td>{{ $data['tanggal'] }}</td>
+                                    @if (Auth::check())
+                                        <h1 class="h3 mb-2 text-gray-800">{{ Auth::user()->name }}</h1>
+                                    @else
+                                        <h1 class="h3 mb-2 text-gray-800">Guest</h1>
+                                    @endif
+
                                     <td>{{ $data->user->name }}</td>
                                     {{-- <td>{{ optional($user)->name ?? 'Guest' }}</td> --}}
                                     <td>{{ $data['shalat_wajib'] }}</td>

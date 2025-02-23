@@ -15,6 +15,8 @@ use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\AttendanceController;
 // use App\Http\Controllers\PresensiScController;
 
+Route::get('/export-excel', [ReportController::class, 'export'])->name('report.export');
+
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate']);
 Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth');
@@ -25,8 +27,16 @@ Route::get('/', function () {
 
 Route::get('/insert', [ReportController::class, 'index']);
 Route::get('/report', [ReportController::class, 'view']);
-Route::get('/naon', [Rekapcontroller::class, 'index']);
-Route::post('/report/store', [ReportController::class, 'store']);
+Route::get('/admin_view', [ReportController::class, 'admin']);
+Route::get('/naon', [ReportController::class, 'report_all_user']);
+Route::delete('/report/delete/{id}', [ReportController::class, 'delete'])->name('report.delete');
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/report/store', [ReportController::class, 'store']);
+});
+
+
+// Route::post('/report/store', [ReportController::class, 'store']);
 
 // User
 Route::get('/users', [UserController::class, 'index']);

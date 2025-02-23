@@ -3,7 +3,7 @@
     <div class="container-fluid">
 
         <!-- Page Heading -->
-        <h1 class="h3 mb-4 text-gray-800">Daily Report</h1>
+        <h1 class="h3 mb-4 text-gray-800">{{ Auth::user()->name }}'s Daily Report</h1>
 
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -11,63 +11,55 @@
             </div>
             <div class="card-body">
 
-                <form method="GET" action="{{ route('layout.admin.rekap_admin') }}">
-                    <label for="month">Bulan:</label>
-                    <select name="month" id="month">
-                        @foreach (range(1, 12) as $m)
-                            <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
-                                {{ date('F', mktime(0, 0, 0, $m, 1)) }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    <label for="year">Tahun:</label>
-                    <select name="year" id="year">
-                        @foreach (range(date('Y') - 5, date('Y')) as $y)
-                            <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
-                                {{ $y }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    <button type="submit">Filter</button>
-                </form>
-
-                <a href="{{ route('rekap.export', ['month' => request('month'), 'year' => request('year')]) }}"
-                    class="btn btn-success">Export Excel</a>
-
-
                 <div class="table-responsive">
                     <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr class="text-center">
+                                <th>Tanggal</th>
                                 <th>Nama</th>
                                 <th>Shalat Wjib</th>
                                 <th>Qiyamul Lail</th>
                                 <th>Tilawah</th>
                                 <th>Duha</th>
+                                {{-- <th>Aksi</th> --}}
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($users as $data)
+                            <?php
+                            $total_shalat_wajib = 0;
+                            $total_qiyamul_lail = 0;
+                            $total_tilawah = 0;
+                            $total_duha = 0;
+                            ?>
+                            @foreach ($report as $data)
+                                {{ $total_shalat_wajib += $data['shalat_wajib'] }}
+                                {{ $total_qiyamul_lail += $data['qiyamul_lail'] }}
+                                {{ $total_tilawah += $data['tilawah'] }}
+                                {{ $total_duha += $data['duha'] }}
                                 <tr>
-                                    <td>{{ $data->name }}</td>
-                                    <td>{{ number_format($data->report_sum_shalat_wajib) }}</td>
-                                    <td>{{ number_format($data->report_sum_qiyamul_lail) }}</td>
-                                    <td>{{ number_format($data->report_sum_tilawah) }}</td>
-                                    <td>{{ number_format($data->report_sum_duha) }}</td>
+                                    <td>{{ $data['tanggal'] }}</td>
+                                    <td>{{ $data->user->name }}</td>
+                                    {{-- <td>{{ optional($user)->name ?? 'Guest' }}</td> --}}
+                                    <td>{{ $data['shalat_wajib'] }}</td>
+                                    <td>{{ $data['qiyamul_lail'] }}</td>
+                                    <td>{{ $data['tilawah'] }}</td>
+                                    <td>{{ $data['duha'] }}</td>
+                                    {{-- <td>
+                                        <a href="{{ url('/study/delete', encrypt($data['id'])) }}" class="btn btn-danger"
+                                            onclick="return confirm('Yakin akan dihapus?')">Hapus</a>
 
+                                        <a href="{{ url('/study/delete', encrypt($data['id'])) }}" class="btn btn-warning"
+                                            onclick="return confirm('Yakin akan dihapus?')">Update</a>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
-                            <tr>
-                                <th>Total</th>
-                                <th>{{ number_format($users->sum('report_sum_shalat_wajib')) }}</th>
-                                <th>{{ number_format($users->sum('report_sum_qiyamul_lail')) }}</th>
-                                <th>{{ number_format($users->sum('report_sum_tilawah')) }}</th>
-                                <th>{{ number_format($users->sum('report_sum_duha')) }}</th>
-                            </tr>
+                            <th colspan="2" class="text-center">Jumlah</th>
+                            <th>{{ $total_shalat_wajib }}</th>
+                            <th>{{ $total_qiyamul_lail }}</th>
+                            <th>{{ $total_tilawah }}</th>
+                            <th>{{ $total_duha }}</th>
                         </tfoot>
                     </table>
                 </div>
@@ -77,22 +69,3 @@
 @endsection
 
 <script src="{{ asset('admin/js/scriptkuring.js') }}"></script>
-<script>
-    var ctx = document.getElementById('rekapChart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ["Shalat Wajib", "Qiyamul Lail", "Tilawah", "Duha"],
-            datasets: [{
-                label: 'Total Ibadah',
-                data: [
-                    {{ $users->sum('report_sum_shalat_wajib') }},
-                    {{ $users->sum('report_sum_qiyamul_lail') }},
-                    {{ $users->sum('report_sum_tilawah') }},
-                    {{ $users->sum('report_sum_duha') }}
-                ],
-                backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e']
-            }]
-        }
-    });
-</script>
