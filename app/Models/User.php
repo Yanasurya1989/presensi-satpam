@@ -19,13 +19,19 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        // 'user_id',
+        'user_id',
         'email',
         'password',
         'foto',
         'role_id',
         'rekap_id'
     ];
+
+    public function report()
+    {
+        return $this->hasMany(Report::class, 'id_user');
+        // return $this->hasMany(Report::class);
+    }
 
     public function shifts()
     {
@@ -37,10 +43,13 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function rekap()
-    {
-        return $this->belongsTo(Rekap::class, 'id_user', 'id');
-    }
+
+
+    // public function rekap()
+    // {
+    //     return $this->hasMany(Rekap::class);
+    // }
+
 
     /**
      * Get the user that owns the User

@@ -38,8 +38,11 @@
                                 <center>
                                     <div class="col mb-3">
                                         {{-- <input type="hidden" id="lokasi"> --}}
-                                        <input type="text" id="lokasi">
+                                        <input type="text" id="lokasi" name="lokasi">
+                                        <input type="text" id="image" name="image">
+
                                         <div class="webcam-capture"></div>
+
                                     </div>
                                     <div class="form-group">
                                         @if ($cek > 0)
@@ -49,6 +52,7 @@
                                         @else
                                             <button type="submit" class="btn btn-primary" id="take-absen">Klik Untuk
                                                 Presensi Masuk
+
                                             </button>
                                         @endif
 
@@ -78,7 +82,7 @@
                 </div>
             </div>
         @else
-            <p>Anda tidak bisa mengakses halaman ini</p>
+            <p>Presensi belum tersedia</p>
         @endif
     </div>
 @endsection
@@ -99,7 +103,13 @@
 
         Webcam.attach('.webcam-capture')
 
+        // Webcam.snap(function(uri) {
+        //     image = uri;
+        //     document.getElementById('image').value = image;
+        // });
+
         var lokasi = document.getElementById('lokasi');
+
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
 
@@ -126,50 +136,56 @@
 
         }
 
-        $('#take-absen').click(function(e) {
-            Webcam.snap(function(uri) {
-                image = uri;
-            });
+        $(document).ready(() => {
 
-            // alert(image);
-            var lokasi = $('#lokasi').val();
 
-            $.ajax({
-                type: 'POST',
-                url: '/presensi/kirim_hadir',
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    image: image,
-                    lokasi: lokasi
-                },
-                cache: false,
-                success: function(respond) {
-                    var status = respond.split("|");
-                    if (status[0] == 'success') {
-                        if (status[2] == 'in') {
-                            notifikasi_in.play();
-                        } else {
-                            notifikasi_out.play();
-                        }
-                        Swal.fire({
-                            title: 'Success!',
-                            text: status[1],
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        })
-                        setTimeout("location.href='presensi-keluar'", 3000);
-                    } else {
-                        if (status[2] == 'radius') {
-                            radius_sound.play();
-                        }
-                        Swal.fire({
-                            title: 'Error!',
-                            text: status[1],
-                            icon: 'error',
-                        })
-                    }
-                }
-            });
+
+            // $('#take-absen').click(function(e) {
+            //     Webcam.snap(function(uri) {
+            //         image = uri;
+            //     });
+
+            //     // alert(image);
+            //     var lokasi = $('#lokasi').val();
+
+            //     $.ajax({
+            //         type: 'POST',
+            //         url: '/presensi/kirim_hadir',
+            //         data: {
+            //             _token: "{{ csrf_token() }}",
+            //             image: image,
+            //             lokasi: lokasi
+            //         },
+            //         cache: false,
+            //         success: function(respond) {
+            //             var status = respond.split("|");
+            //             if (status[0] == 'success') {
+            //                 if (status[2] == 'in') {
+            //                     notifikasi_in.play();
+            //                 } else {
+            //                     notifikasi_out.play();
+            //                 }
+            //                 Swal.fire({
+            //                     title: 'Success!',
+            //                     text: status[1],
+            //                     icon: 'success',
+            //                     confirmButtonText: 'OK'
+            //                 })
+            //                 setTimeout("location.href='presensi-keluar'", 3000);
+            //             } else {
+            //                 if (status[2] == 'radius') {
+            //                     radius_sound.play();
+            //                 }
+            //                 Swal.fire({
+            //                     title: 'Error!',
+            //                     text: status[1],
+            //                     icon: 'error',
+            //                 })
+            //             }
+            //         }
+            //     });
+            // })
+
         })
     </script>
 @endpush

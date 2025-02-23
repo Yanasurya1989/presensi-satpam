@@ -1,18 +1,19 @@
 <?php
 
-use App\Models\Kehadiran;
+// use App\Models\Kehadiran;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+// use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\Rekapcontroller;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\PresensiController;
+// use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\PresensiScController;
+// use App\Http\Controllers\PresensiScController;
 
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate']);
@@ -24,6 +25,7 @@ Route::get('/', function () {
 
 Route::get('/insert', [ReportController::class, 'index']);
 Route::get('/report', [ReportController::class, 'view']);
+Route::get('/naon', [Rekapcontroller::class, 'index']);
 Route::post('/report/store', [ReportController::class, 'store']);
 
 // User
@@ -35,10 +37,11 @@ Route::post('/user/update/{user}', [UserController::class, 'update']);
 
 // Report admin
 Route::get('/report-admin', [Rekapcontroller::class, 'index']);
+// Route::get('/rekap', [Rekapcontroller::class, 'index']);
 
 // Presensi SC
 // Route::get('/presensi-sc', [PresensiScController::class, 'index']);
-Route::get('/presensi-sc', [KehadiranController::class, 'index']);
+Route::get('/presensi-sc', [KehadiranController::class, 'index'])->name('presensi_sc');
 Route::post('/simpan-masuk', [KehadiranController::class, 'store']);
 
 Route::get('/presensi-keluar', [KehadiranController::class, 'out_sc']);
@@ -66,3 +69,12 @@ Route::post('/presensi/kirim_hadir', [KehadiranController::class, 'kirim_hadir']
 
 //presensi handling
 Route::post('/submit', [AjaxController::class, 'submit'])->name('ajax.submit');
+
+// Webcam Capture
+// Route::get('/capture', function () {
+//     return view('capture/capture');
+// })->name('capture.form');
+
+// Route::post('/capture', [PhotoController::class, 'capture']);
+// Route::get('/report-admin', [ReportController::class, 'index'])->name('layout.admin.rekap_admin');
+Route::get('/admin-rekap', [Rekapcontroller::class, 'index']);

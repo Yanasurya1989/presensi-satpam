@@ -144,6 +144,21 @@
     <script src="{{ asset('admin/js/tampilkanadmin.js') }}"></script>
 
     @stack('myscript')
+
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true
+            });
+        });
+    </script>
+    <canvas id="rekapChart"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
 </body>
 
 </html>

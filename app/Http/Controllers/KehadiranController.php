@@ -202,44 +202,50 @@ class KehadiranController extends Controller
     public function kirim_hadir(Request $request)
     {
         $id = Auth::user()->id;
+        // dd($id);
         $tgl_presensi = date("Y-m-d");
         $jam = date("H:i:s");
         $latitudesekolah = -6.971690;
         $longitudesekolah = 107.752041;
         $lokasi = $request->lokasi;
-        $lokasi_user = explode('.', $lokasi);
+        $lokasi_user = explode(',', $lokasi);
+        // dd($lokasi_user);
         $latitude_user = $lokasi_user[0];
         $longitude_user = $lokasi_user[1];
         $jarak = $this->distance($latitudesekolah, $longitudesekolah, $latitude_user, $longitude_user);
         $radius = round($jarak['meters']);
-        $image = $request->image;
-        $folderPath = "public/uploads/absensi/";
-        $formatName = $id . "-" . $tgl_presensi;
-        $image_parts = explode(";base64", $image);
-        $image_base64 = base64_decode($image_parts[1]);
-        $filename = $formatName . ".png";
-        $file = $folderPath . $filename;
+
+        // $image = $request->image;
+        // dd($image);
+        // $folderPath = "public/uploads/absensi/";
+        // $formatName = $id . "-" . $tgl_presensi;
+        // $image_parts = explode(",", $image);
+        // $image_base64 = base64_decode($image_parts[1]);
+        // $filename = $formatName . ".png";
+        // $file = $folderPath . $filename;
         $data = [
             'id' => $id,
             'tgl_presensi' => $tgl_presensi,
             'jam_in' => $jam,
-            'foto_in' => $filename,
-            'lokasi_in' => $lokasi
+            // 'foto_in' => $filename,
+            // 'lokasi_in' => $lokasi
         ];
+
         $cek = DB::table('selfi_presensi')->where('tgl_presensi', $tgl_presensi)->where('id', $id)->count();
+        // dd($cek);
         if ($radius > 20) {
             echo "error|Anda berada diluar radius, jarak bapak/ibu " . $radius . " meter dari titik koordinat|radius";
         } else {
-            if ($cek > 0) {
+            if (is_null($cek)) {
                 $data_pulang = [
                     'jam_out' => $jam,
-                    'foto_out' => $filename,
+                    // 'foto_out' => $filename,
                     'lokasi_out' => $lokasi
                 ];
                 $update = DB::table('selfi_presensi')->where('tgl_presensi', $tgl_presensi)->where('id', $id)->update($data_pulang);
                 if ($update) {
                     echo "success|titidije|out";
-                    Storage::put($file, $image_base64);
+                    // Storage::put($file, $image_base64);
                 } else {
                     echo "error|Maaf gagal absen|out";
                 }
@@ -248,13 +254,14 @@ class KehadiranController extends Controller
                     'id' => $id,
                     'tgl_presensi' => $tgl_presensi,
                     'jam_in' => $jam,
-                    'foto_in' => $filename,
-                    'lokasi_in' => $lokasi
+                    // 'foto_in' => $filename,
+                    // 'lokasi_in' => $lokasi
                 ];
-                $simpan = DB::table('presensi')->insert($data);
+                $simpan = DB::table('selfi_presensi')->insert($data);
                 if ($simpan) {
-                    echo 'success|selamat bekerja|in';
-                    Storage::put($file, $image_base64);
+                    // echo 'success|selamat bekerja |in';
+                    return redirect()->route('presensi_sc');
+                    // Storage::put($file, $image_base64);
                 } else {
                     echo "error|Maaf gagal absen|in";
                 }
@@ -273,7 +280,7 @@ class KehadiranController extends Controller
         $feet = $miles * 5280;
         $yards = $feet / 3;
         $kilometers = $miles * 1.609344;
-        $meters = $kilometers * 1000;
+        $meters = $kilometers / 1000;
         return compact('meters');
     }
 }

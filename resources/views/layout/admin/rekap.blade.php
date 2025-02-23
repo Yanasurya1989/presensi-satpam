@@ -39,6 +39,7 @@
                                 <tr>
                                     <td>{{ $data['tanggal'] }}</td>
                                     <td>{{ $data->user->name }}</td>
+                                    {{-- <td>{{ optional($user)->name ?? 'Guest' }}</td> --}}
                                     <td>{{ $data['shalat_wajib'] }}</td>
                                     <td>{{ $data['qiyamul_lail'] }}</td>
                                     <td>{{ $data['tilawah'] }}</td>

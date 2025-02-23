@@ -37,6 +37,13 @@ class ReportController extends Controller
         return view('layout.admin.rekap', compact('report'));
     }
 
+    public function view_admin()
+    {
+        $report = Report::where('id_user', Auth::user()->id)->get();
+        // return view('layout.admin.all-daily', compact('report'));
+        return view('layout.admin.all-daily', compact('report'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
