@@ -41,31 +41,24 @@
 
                             <label>Qiyamul Lail</label>
                             <select name="qiyamul_lail" class="form-control mb-4" required>
-                                <option value="">-- Jumlah raka'at --</option>
-                                <option value="0">0</option>
-                                <option value="2">2</option>
-                                <option value="4">4</option>
-                                <option value="6">6</option>
-                                <option value="8">8</option>
-                                <option value="11">11</option>
+                                <option value="">-- Ya/Tidak --</option>
+                                <option value="1">Ya</option>
+                                <option value="0">Tidak</option>
                             </select>
 
                             <label>Tilawah</label>
                             <select name="tilawah" class="form-control mb-4" required>
                                 <option value="">-- Jumlah halaman --</option>
-                                @for ($i = 0; $i <= 10; $i++)
+                                @for ($i = 0; $i <= 100; $i++)
                                     <option value="{{ $i }}">{{ $i }}</option>
                                 @endfor
                             </select>
 
                             <label>Shalat Duha</label>
                             <select name="duha" class="form-control mb-4" required>
-                                <option value="">-- Jumlah raka'at --</option>
-                                <option value="0">0</option>
-                                <option value="2">2</option>
-                                <option value="4">4</option>
-                                <option value="6">6</option>
-                                <option value="8">8</option>
+                                <option value="">-- Ya/Tidak --</option>
+                                <option value="1">Ya</option>
+                                <option value="0">Tidak</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Kirim</button>
