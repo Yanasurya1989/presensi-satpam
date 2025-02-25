@@ -24,7 +24,8 @@ class User extends Authenticatable
         'password',
         'foto',
         'role_id',
-        'rekap_id'
+        'rekap_id',
+        'divisi'
     ];
 
     public function report()

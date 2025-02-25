@@ -24,6 +24,7 @@ class DailyReportExport implements FromCollection, WithHeadings
     {
         return [
             'Nama',
+            'Divisi',
             'Shalat Wajib',
             'Qiyamul Lail',
             'Tilawah',

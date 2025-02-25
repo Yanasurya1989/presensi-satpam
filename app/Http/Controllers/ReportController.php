@@ -67,12 +67,13 @@ class ReportController extends Controller
             ->select(
                 'users.id',
                 'users.name',
+                'users.divisi',
                 DB::raw('SUM(report.shalat_wajib) as report_sum_shalat_wajib'),
                 DB::raw('SUM(report.qiyamul_lail) as report_sum_qiyamul_lail'),
                 DB::raw('SUM(report.tilawah) as report_sum_tilawah'),
                 DB::raw('SUM(report.duha) as report_sum_duha')
             )
-            ->groupBy('users.id', 'users.name')
+            ->groupBy('users.id', 'users.name', 'users.divisi')
             ->get());
 
         return view('layout.admin.all-daily', compact('users'));
@@ -189,12 +190,13 @@ class ReportController extends Controller
             ->leftJoin('report', 'report.id_user', '=', 'users.id')
             ->select(
                 'users.name',
+                'users.divisi',
                 DB::raw('SUM(report.shalat_wajib) as shalat_wajib'),
                 DB::raw('SUM(report.qiyamul_lail) as qiyamul_lail'),
                 DB::raw('SUM(report.tilawah) as tilawah'),
                 DB::raw('SUM(report.duha) as duha')
             )
-            ->groupBy('users.id', 'users.name')
+            ->groupBy('users.id', 'users.name', 'users.divisi')
             ->get();
 
         // Debug apakah data ada atau tidak
