@@ -14,6 +14,13 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\AttendanceController;
 // use App\Http\Controllers\PresensiScController;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
+
+Route::get('/export-users', function () {
+    return Excel::download(new UsersExport, 'users.xlsx');
+});
+
 
 Route::get('/export-excel', [ReportController::class, 'export'])->name('report.export');
 
@@ -27,6 +34,7 @@ Route::get('/', function () {
 
 Route::get('/insert', [ReportController::class, 'index']);
 Route::get('/report', [ReportController::class, 'view']);
+Route::get('/daily-report', [ReportController::class, 'daily_check']);
 Route::get('/admin_view', [ReportController::class, 'admin']);
 Route::get('/naon', [ReportController::class, 'report_all_user']);
 Route::delete('/report/delete/{id}', [ReportController::class, 'delete'])->name('report.delete');

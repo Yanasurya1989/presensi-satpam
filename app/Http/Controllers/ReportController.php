@@ -26,7 +26,13 @@ class ReportController extends Controller
     {
         // $report = Report::all();
         $report = Report::where('id_user', Auth::user()->id)->get();
-        return view('layout.admin.rekap_admin', compact('report'));
+        $total_shalat_wajib = $report->sum('shalat_wajib');
+        $total_qiyamul_lail = $report->sum('qiyamul_lail');
+        $total_tilawah = $report->sum('tilawah');
+        $total_duha = $report->sum('duha');
+        $total_mendoakan_siswa = $report->sum('mendoakan_siswa');
+
+        return view('layout.admin.rekap_admin', compact('report', 'total_shalat_wajib', 'total_qiyamul_lail', 'total_tilawah', 'total_duha', 'total_mendoakan_siswa'));
     }
 
     public function view()
@@ -39,13 +45,50 @@ class ReportController extends Controller
         } else {
             $report = Report::get();
         }
-        return view('layout.admin.rekap', compact('report'));
+        // $report = Attendance::with('user')->get();
+
+        $total_shalat_wajib = $report->sum('shalat_wajib');
+        $total_qiyamul_lail = $report->sum('qiyamul_lail');
+        $total_tilawah = $report->sum('tilawah');
+        $total_duha = $report->sum('duha');
+        $total_mendoakan_siswa = $report->sum('mendoakan_siswa');
+        // $total_mendoakan_siswa = Report::where('mendoakan_siswa', 1)->count();
+
+
+        // return view('your_view_name', compact('report', 'total_shalat_wajib', 'total_qiyamul_lail', 'total_tilawah', 'total_duha'));
+
+        return view('layout.admin.rekap', compact('report', 'total_shalat_wajib', 'total_qiyamul_lail', 'total_tilawah', 'total_duha', 'total_mendoakan_siswa'));
+    }
+
+    public function daily_check()
+    {
+        $role = Auth::user()->role->name;
+
+        if ($role == 'User') {
+            $report = Report::where('id_user', Auth::user()->id)->with('user')->get();
+        } else {
+            $report = Report::with('user')->get();
+        }
+
+        $total_shalat_wajib = $report->sum('shalat_wajib');
+        $total_qiyamul_lail = $report->sum('qiyamul_lail');
+        $total_tilawah = $report->sum('tilawah');
+        $total_duha = $report->sum('duha');
+        $total_mendoakan_siswa = $report->sum('mendoakan_siswa');
+        return view('layout.admin.daily-check', compact('report', 'total_shalat_wajib', 'total_qiyamul_lail', 'total_tilawah', 'total_duha', 'total_mendoakan_siswa'));
     }
 
     public function view_admin()
     {
         $report = Report::where('id_user', Auth::user()->id)->get();
         // return view('layout.admin.all-daily', compact('report'));
+
+
+        $total_shalat_wajib = $report->sum('shalat_wajib');
+        $total_qiyamul_lail = $report->sum('qiyamul_lail');
+        $total_tilawah = $report->sum('tilawah');
+        $total_duha = $report->sum('duha');
+        $total_mendoakan_siswa = $report->sum('mendoakan_siswa');
         return view('layout.admin.all-daily', compact('report'));
     }
 
@@ -71,7 +114,8 @@ class ReportController extends Controller
                 DB::raw('SUM(report.shalat_wajib) as report_sum_shalat_wajib'),
                 DB::raw('SUM(report.qiyamul_lail) as report_sum_qiyamul_lail'),
                 DB::raw('SUM(report.tilawah) as report_sum_tilawah'),
-                DB::raw('SUM(report.duha) as report_sum_duha')
+                DB::raw('SUM(report.duha) as report_sum_duha'),
+                DB::raw('SUM(report.mendoakan_siswa) as report_sum_mendoakan_siswa')
             )
             ->groupBy('users.id', 'users.name', 'users.divisi')
             ->get());
@@ -114,6 +158,31 @@ class ReportController extends Controller
     //     return redirect('/report');
     // }
 
+    // public function store(Request $request)
+    // {
+    //     $tanggal = Carbon::now()->format('Y-m-d');
+    //     $id_user = $request->id_user;
+
+    //     // Cek apakah user sudah mengisi data hari ini
+    //     $cek = Report::where('id_user', $id_user)->where('tanggal', $tanggal)->first();
+    //     if ($cek) {
+    //         return redirect('/report')->with('error', 'Anda sudah mengisi data hari ini.');
+    //     }
+
+    //     // Jika belum ada, simpan data
+    //     Report::create([
+    //         'tanggal' => $tanggal,
+    //         'id_user' => $id_user,
+    //         'shalat_wajib' => $request->shalat_wajib,
+    //         'qiyamul_lail' => $request->qiyamul_lail,
+    //         'tilawah' => $request->tilawah,
+    //         'duha' => $request->duha,
+    //         'mendoakan_siswa' => $request->mendoakan_siswa ?? 0,
+    //     ]);
+
+    //     return redirect('/report')->with('success', 'Data berhasil disimpan.');
+    // }
+
     public function store(Request $request)
     {
         $tanggal = Carbon::now()->format('Y-m-d');
@@ -122,7 +191,7 @@ class ReportController extends Controller
         // Cek apakah user sudah mengisi data hari ini
         $cek = Report::where('id_user', $id_user)->where('tanggal', $tanggal)->first();
         if ($cek) {
-            return redirect('/report')->with('error', 'Anda sudah mengisi data hari ini.');
+            return $this->redirectByRole()->with('error', 'Anda sudah mengisi data hari ini.');
         }
 
         // Jika belum ada, simpan data
@@ -133,11 +202,23 @@ class ReportController extends Controller
             'qiyamul_lail' => $request->qiyamul_lail,
             'tilawah' => $request->tilawah,
             'duha' => $request->duha,
+            'mendoakan_siswa' => $request->mendoakan_siswa ?? 0,
         ]);
 
-        return redirect('/report')->with('success', 'Data berhasil disimpan.');
+        return $this->redirectByRole()->with('success', 'Data berhasil disimpan.');
     }
 
+    // Fungsi untuk redirect berdasarkan role pengguna
+    private function redirectByRole()
+    {
+        $user = Auth::user();
+
+        if ($user->role === 'Super Admin') {
+            return redirect('/admin_view');
+        }
+
+        return redirect('/report'); // Default untuk user biasa
+    }
 
     /**
      * Display the specified resource.

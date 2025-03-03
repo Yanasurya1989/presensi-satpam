@@ -30,6 +30,7 @@
                                 <th>Qiyamul Lail</th>
                                 <th>Tilawah</th>
                                 <th>Duha</th>
+                                <th>Mendoakan Siswa</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -44,6 +45,7 @@
                                         <td>{{ number_format($data->report_sum_qiyamul_lail) }}</td>
                                         <td>{{ number_format($data->report_sum_tilawah) }}</td>
                                         <td>{{ number_format($data->report_sum_duha) }}</td>
+                                        <td>{{ number_format($data->report_sum_mendoakan_siswa) }}</td>
                                         <td>
                                             <form action="{{ route('report.delete', $data->id) }}" method="POST"
                                                 onsubmit="return confirm('Yakin ingin menghapus data ini?');">
@@ -68,6 +70,7 @@
                                 <th>{{ number_format($users->max('report_sum_qiyamul_lail')) }}</th>
                                 <th>{{ number_format($users->max('report_sum_tilawah')) }}</th>
                                 <th>{{ number_format($users->max('report_sum_duha')) }}</th>
+                                <th>{{ number_format($users->max('report_sum_mendoakan_siswa')) }}</th>
                             </tr>
                         </tfoot>
                     </table>

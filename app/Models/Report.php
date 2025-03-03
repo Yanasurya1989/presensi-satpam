@@ -16,7 +16,8 @@ class Report extends Model
         'shalat_wajib',
         'qiyamul_lail',
         'tilawah',
-        'duha'
+        'duha',
+        'mendoakan_siswa'
     ];
 
     public function user()

@@ -20,6 +20,9 @@
                                 data-target="#addUnitModal">
                                 Add Users
                             </button>
+                            <a href="{{ url('/export-users') }}" class="btn btn-success mb-3">
+                                Export Excel
+                            </a>
                             {{-- modal --}}
                             <div class="modal fade" tabindex="-1" id="addUnitModal" aria-labelledby="addUnitModalLabel"
                                 aria-hidden="true">
@@ -39,6 +42,12 @@
                                                     <label for="exampleInputEmail1" class="form-label">Name</label>
                                                     <input type="text" class="form-control" id="judul"
                                                         name="name">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label for="exampleInputEmail1" class="form-label">Unit</label>
+                                                    <input type="text" class="form-control" id="divisi"
+                                                        name="divisi">
                                                 </div>
 
                                                 <div class="mb-3">
@@ -92,6 +101,7 @@
                             <thead>
                                 <tr>
                                     <th>Nama</th>
+                                    <th>Unit</th>
                                     <th>Role</th>
                                     <th>Email</th>
                                     <th>Gambar</th>
@@ -102,6 +112,7 @@
                                 @foreach ($users as $data)
                                     <tr>
                                         <td>{{ $data['name'] }}</td>
+                                        <td>{{ $data['divisi'] }}</td>
                                         <td>{{ $data['role_id'] }}</td>
                                         <td>{{ $data['email'] }}</td>
                                         <td>

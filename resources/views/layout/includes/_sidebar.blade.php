@@ -84,7 +84,7 @@
                 ?>
                 @if ($role == 'Super Admin')
                     {{-- @if ($role == 'Super Admin' || $role == 'Admin') --}}
-                    <a class="collapse-item" href="{{ url('/report') }}">Daily Check</a>
+                    <a class="collapse-item" href="{{ url('/daily-report') }}">Daily Check</a>
                     <a class="collapse-item" href="{{ url('/naon') }}">All User Report</a>
                 @else
                     <p style="display: none">Anda tidak bisa mengakses halaman ini</p>

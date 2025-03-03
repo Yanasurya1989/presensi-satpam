@@ -26,6 +26,7 @@ class UserController extends Controller
     {
         // input
         $name = $request->name;
+        $divisi = $request->divisi;
         $email = $request->email;
         $role_id = $request->role_id;
         $password = $request->password;
@@ -40,6 +41,7 @@ class UserController extends Controller
         // proses
         $simpan = User::create([
             'name' => $name,
+            'divisi' => $divisi,
             'email' => $email,
             'role_id' => $role_id,
             'password' => $password,

@@ -60,6 +60,14 @@
                                 <option value="1">Ya</option>
                                 <option value="0">Tidak</option>
                             </select>
+
+                            <label>Mendoakan Siswa</label>
+                            <select name="mendoakan_siswa" class="form-control mb-4" required>
+                                <option value="">-- Ya/Tidak --</option>
+                                <option value="1">Ya</option>
+                                <option value="0">Tidak</option>
+                            </select>
+
                         </div>
                         <button type="submit" class="btn btn-primary">Kirim</button>
                     </form>

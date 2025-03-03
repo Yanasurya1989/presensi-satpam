@@ -21,21 +21,13 @@
                                 <th>Qiyamul Lail</th>
                                 <th>Tilawah</th>
                                 <th>Duha</th>
+                                <th>Mendoakan</th>
                                 {{-- <th>Aksi</th> --}}
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-                            $total_shalat_wajib = 0;
-                            $total_qiyamul_lail = 0;
-                            $total_tilawah = 0;
-                            $total_duha = 0;
-                            ?>
+
                             @foreach ($report as $data)
-                                {{ $total_shalat_wajib += $data['shalat_wajib'] }}
-                                {{ $total_qiyamul_lail += $data['qiyamul_lail'] }}
-                                {{ $total_tilawah += $data['tilawah'] }}
-                                {{ $total_duha += $data['duha'] }}
                                 <tr>
                                     <td>{{ $data['tanggal'] }}</td>
                                     <td>{{ $data->user->name }}</td>
@@ -44,6 +36,8 @@
                                     <td>{{ $data['qiyamul_lail'] }}</td>
                                     <td>{{ $data['tilawah'] }}</td>
                                     <td>{{ $data['duha'] }}</td>
+                                    <td>{{ $data['mendoakan_siswa'] }}</td>
+                                    {{-- <td>{{ $data['mendoakan_siswa'] == 1 ? 'Ya' : 'Tidak' }}</td> --}}
                                     {{-- <td>
                                         <a href="{{ url('/study/delete', encrypt($data['id'])) }}" class="btn btn-danger"
                                             onclick="return confirm('Yakin akan dihapus?')">Hapus</a>
@@ -60,6 +54,7 @@
                             <th>{{ $total_qiyamul_lail }}</th>
                             <th>{{ $total_tilawah }}</th>
                             <th>{{ $total_duha }}</th>
+                            <th>{{ $total_mendoakan_siswa }}</th>
                         </tfoot>
                     </table>
                 </div>

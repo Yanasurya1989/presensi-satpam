@@ -30,19 +30,13 @@
                             @foreach ($report as $data)
                                 <tr>
                                     <td>{{ $data['tanggal'] }}</td>
-                                    @if (Auth::check())
-                                        {{-- <h1 class="h3 mb-2 text-gray-800">{{ Auth::user()->name }}</h1> --}}
-                                    @else
-                                        {{-- <h1 class="h3 mb-2 text-gray-800">Guest</h1> --}}
-                                    @endif
-
-                                    <td>{{ $data->user->name }}</td>
-                                    {{-- <td>{{ optional($user)->name ?? 'Guest' }}</td> --}}
+                                    {{-- <td>{{ $data->user->name }}</td> --}}
+                                    <td>{{ $data->user ? $data->user->name : 'Tidak Ada Nama' }}</td>
                                     <td>{{ $data['shalat_wajib'] }}</td>
                                     <td>{{ $data['qiyamul_lail'] }}</td>
                                     <td>{{ $data['tilawah'] }}</td>
                                     <td>{{ $data['duha'] }}</td>
-                                    <td>{{ $data['mendoakan_siswa'] == 1 ? 'Ya' : 'Tidak' }}</td>
+                                    <td>{{ $data['mendoakan_siswa'] }}</td>
                                     {{-- <td>
                                         <a href="{{ url('/study/delete', encrypt($data['id'])) }}" class="btn btn-danger"
                                             onclick="return confirm('Yakin akan dihapus?')">Hapus</a>
