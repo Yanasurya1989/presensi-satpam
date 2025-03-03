@@ -22,7 +22,8 @@ Route::get('/export-users', function () {
 });
 
 
-Route::get('/export-excel', [ReportController::class, 'export'])->name('report.export');
+Route::get('/export', [ReportController::class, 'export'])->name('export');
+// Route::get('/export-excel', [ReportController::class, 'export'])->name('report.export');
 
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate']);

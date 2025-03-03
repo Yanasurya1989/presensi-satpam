@@ -47,12 +47,14 @@
                             </select>
 
                             <label>Tilawah</label>
-                            <select name="tilawah" class="form-control mb-4" required>
+                            <input type="text" name="tilawah" class="form-control mb-4"
+                                placeholder="Masukkan jumlah tilawah" required>
+                            {{-- <select name="tilawah" class="form-control mb-4" required>
                                 <option value="">-- Jumlah halaman --</option>
                                 @for ($i = 0; $i <= 100; $i++)
                                     <option value="{{ $i }}">{{ $i }}</option>
                                 @endfor
-                            </select>
+                            </select> --}}
 
                             <label>Shalat Duha</label>
                             <select name="duha" class="form-control mb-4" required>

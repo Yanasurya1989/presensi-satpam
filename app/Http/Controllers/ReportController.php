@@ -265,9 +265,54 @@ class ReportController extends Controller
         }
     }
 
-    public function export()
+    // public function export()
+    // {
+    //     $data = DB::table('users')
+    //         ->leftJoin('report', 'report.id_user', '=', 'users.id')
+    //         ->select(
+    //             'users.name',
+    //             'users.divisi',
+    //             DB::raw('SUM(report.shalat_wajib) as shalat_wajib'),
+    //             DB::raw('SUM(report.qiyamul_lail) as qiyamul_lail'),
+    //             DB::raw('SUM(report.tilawah) as tilawah'),
+    //             DB::raw('SUM(report.duha) as duha')
+    //         )
+    //         ->groupBy('users.id', 'users.name', 'users.divisi')
+    //         ->get();
+
+    //     // Debug apakah data ada atau tidak
+    //     // dd($data);
+
+    //     return Excel::download(new DailyReportExport($data), 'daily_report.xlsx');
+    // }
+
+    // public function export(Request $request)
+    // {
+    //     $query = DB::table('users')
+    //         ->leftJoin('report', 'report.id_user', '=', 'users.id')
+    //         ->select(
+    //             'users.name',
+    //             'users.divisi',
+    //             DB::raw('SUM(report.shalat_wajib) as shalat_wajib'),
+    //             DB::raw('SUM(report.qiyamul_lail) as qiyamul_lail'),
+    //             DB::raw('SUM(report.tilawah) as tilawah'),
+    //             DB::raw('SUM(report.duha) as duha')
+    //         )
+    //         ->groupBy('users.id', 'users.name', 'users.divisi');
+
+    //     // Cek apakah ada filter divisi yang diberikan
+    //     if ($request->has('divisi') && !empty($request->divisi)) {
+    //         $query->where('users.divisi', $request->divisi);
+    //     }
+
+    //     $data = $query->get();
+
+    //     return Excel::download(new DailyReportExport($data), 'daily_report.xlsx');
+    // }
+
+    public function export(Request $request)
     {
-        $data = DB::table('users')
+        $query = DB::table('users')
             ->leftJoin('report', 'report.id_user', '=', 'users.id')
             ->select(
                 'users.name',
@@ -277,11 +322,19 @@ class ReportController extends Controller
                 DB::raw('SUM(report.tilawah) as tilawah'),
                 DB::raw('SUM(report.duha) as duha')
             )
-            ->groupBy('users.id', 'users.name', 'users.divisi')
-            ->get();
+            ->groupBy('users.id', 'users.name', 'users.divisi');
 
-        // Debug apakah data ada atau tidak
-        // dd($data);
+        // Filter berdasarkan divisi
+        if ($request->has('divisi') && !empty($request->divisi)) {
+            $query->where('users.divisi', $request->divisi);
+        }
+
+        // Filter berdasarkan bulan
+        if ($request->has('bulan') && !empty($request->bulan)) {
+            $query->whereMonth('report.created_at', $request->bulan);
+        }
+
+        $data = $query->get();
 
         return Excel::download(new DailyReportExport($data), 'daily_report.xlsx');
     }

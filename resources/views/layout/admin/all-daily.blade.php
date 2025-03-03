@@ -18,7 +18,29 @@
                     <div class="alert alert-danger">{{ session('error') }}</div>
                 @endif
 
-                <a href="{{ route('report.export') }}" class="btn btn-success mb-3">Export Excel</a>
+                <form action="{{ route('export') }}" method="GET">
+                    <select name="divisi">
+                        <option value="">Semua Divisi</option>
+                        <option value="Yayasan">Yayasan</option>
+                        <option value="Bidang 2">Bidang 2</option>
+                        <option value="Bidang 3">Bidang 3</option>
+                        <option value="Bidang 4">Bidang 4</option>
+                        <option value="SDITQ">SDITQ</option>
+                        <option value="SMPITQ">SMPITQ</option>
+                        <option value="SMAITQ">SMAITQ</option>
+                    </select>
+
+                    <select name="bulan">
+                        <option value="">Semua Bulan</option>
+                        @for ($i = 1; $i <= 12; $i++)
+                            <option value="{{ $i }}">{{ date('F', mktime(0, 0, 0, $i, 1)) }}</option>
+                        @endfor
+                    </select>
+
+                    <button type="submit">Export</button>
+                </form>
+
+                {{-- <a href="{{ route('report.export') }}" class="btn btn-success mb-3">Export Excel</a> --}}
 
                 <div class="table-responsive">
                     <table class="table table-bordered text-center" id="dataTable" width="100%" cellspacing="0">
