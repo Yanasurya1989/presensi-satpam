@@ -22,6 +22,8 @@
                                 <th>Tilawah</th>
                                 <th>Duha</th>
                                 <th>Mendoakan</th>
+                                <th>Creat At</th>
+                                <th>Check</th>
                                 {{-- <th>Aksi</th> --}}
                             </tr>
                         </thead>
@@ -37,6 +39,14 @@
                                     <td>{{ $data['tilawah'] }}</td>
                                     <td>{{ $data['duha'] }}</td>
                                     <td>{{ $data['mendoakan_siswa'] }}</td>
+                                    <td>{{ $data['created_at'] }}</td>
+                                    <td>
+                                        @if (\Carbon\Carbon::parse($data['created_at'])->format('Y-m-d') == $data['tanggal'])
+                                            On Time
+                                        @else
+                                            1
+                                        @endif
+                                    </td>
                                     {{-- <td>
                                         <a href="{{ url('/study/delete', encrypt($data['id'])) }}" class="btn btn-danger"
                                             onclick="return confirm('Yakin akan dihapus?')">Hapus</a>

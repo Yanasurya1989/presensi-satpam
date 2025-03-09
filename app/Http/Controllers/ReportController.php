@@ -105,6 +105,21 @@ class ReportController extends Controller
         // return view('layout.admin.rekap_admin', compact('users'));
         // return view('layout.admin.all-daily', compact('users'));
 
+        // $users = collect(DB::table('users')
+        //     ->leftJoin('report', 'report.id_user', '=', 'users.id')
+        //     ->select(
+        //         'users.id',
+        //         'users.name',
+        //         'users.divisi',
+        //         DB::raw('SUM(report.shalat_wajib) as report_sum_shalat_wajib'),
+        //         DB::raw('SUM(report.qiyamul_lail) as report_sum_qiyamul_lail'),
+        //         DB::raw('SUM(report.tilawah) as report_sum_tilawah'),
+        //         DB::raw('SUM(report.duha) as report_sum_duha'),
+        //         DB::raw('SUM(report.mendoakan_siswa) as report_sum_mendoakan_siswa')
+        //     )
+        //     ->groupBy('users.id', 'users.name', 'users.divisi')
+        //     ->get());
+
         $users = collect(DB::table('users')
             ->leftJoin('report', 'report.id_user', '=', 'users.id')
             ->select(
@@ -115,7 +130,8 @@ class ReportController extends Controller
                 DB::raw('SUM(report.qiyamul_lail) as report_sum_qiyamul_lail'),
                 DB::raw('SUM(report.tilawah) as report_sum_tilawah'),
                 DB::raw('SUM(report.duha) as report_sum_duha'),
-                DB::raw('SUM(report.mendoakan_siswa) as report_sum_mendoakan_siswa')
+                DB::raw('SUM(report.mendoakan_siswa) as report_sum_mendoakan_siswa'),
+                DB::raw('SUM(CASE WHEN DATE(report.created_at) != report.tanggal THEN 1 ELSE 0 END) as report_check_count')
             )
             ->groupBy('users.id', 'users.name', 'users.divisi')
             ->get());

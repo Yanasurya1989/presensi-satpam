@@ -53,6 +53,7 @@
                                 <th>Tilawah</th>
                                 <th>Duha</th>
                                 <th>Mendoakan Siswa</th>
+                                <th>Jumlah Check</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -68,6 +69,7 @@
                                         <td>{{ number_format($data->report_sum_tilawah) }}</td>
                                         <td>{{ number_format($data->report_sum_duha) }}</td>
                                         <td>{{ number_format($data->report_sum_mendoakan_siswa) }}</td>
+                                        <td>{{ $data->report_check_count }}</td>
                                         <td>
                                             <form action="{{ route('report.delete', $data->id) }}" method="POST"
                                                 onsubmit="return confirm('Yakin ingin menghapus data ini?');">
