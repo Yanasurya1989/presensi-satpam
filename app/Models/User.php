@@ -9,14 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'user_id',
@@ -28,15 +21,15 @@ class User extends Authenticatable
         'divisi'
     ];
 
+    public function shifts()
+    {
+        return $this->belongsToMany(Shift::class, 'user_shifts')->withPivot('shift_date')->withTimestamps();
+    }
+
     public function report()
     {
         return $this->hasMany(Report::class, 'id_user');
         // return $this->hasMany(Report::class);
-    }
-
-    public function shifts()
-    {
-        return $this->belongsToMany(Shift::class, 'user_shifts')->withPivot('shift_date')->withTimestamps();
     }
 
     /**

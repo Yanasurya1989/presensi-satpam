@@ -1,37 +1,37 @@
-@extends('layout.master')
+{{-- @extends('layout.master')
 @section('content')
     <div class="container-fluid">
 
-        <!-- Page Heading -->
+        Page Heading
         <h1 class="h3 mb-4 text-gray-800">Selamat datang {{ Auth::user()->name }}, anda login sebagai
             {{ Auth::user()->role->name }}</h1>
 
-        {{-- <a href="{{ url('/insert') }}" class="btn btn-primary form-control">Insert Mutaba'ah</a> --}}
+        <a href="{{ url('/insert') }}" class="btn btn-primary form-control">Insert Mutaba'ah</a>
         <a href="#" class="btn btn-primary form-control" id="presensi" onclick="presensi()">Presensi Kedatangan</a>
         <p id="result" class="text-danger">Anda belum presensi</p>
 
 
 
-        {{-- {{ Auth::user() }} --}}
-        {{-- {{ Auth::user()->role }} --}}
+        {{ Auth::user() }}
+        {{ Auth::user()->role }}
     </div>
     <script>
         $(document).ready(function() {
-            // Set CSRF Token in Header
+            
             $.ajaxSetup({
                 headers: {
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
                 },
             });
 
-            // Handle Form Submission
+            
             $("#presensi").click(function(e) {
-                e.preventDefault(); // Prevent default form submission
+                e.preventDefault(); 
 
                 let name = $("#name").val();
 
                 $.ajax({
-                    url: "/submit", // Replace with your route
+                    url: "/submit", 
                     type: "POST",
                     data: {
                         name: name,
@@ -45,6 +45,46 @@
                         );
                     },
                 });
+            });
+        });
+    </script>
+@endsection --}}
+
+
+@extends('layout.master')
+@section('content')
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-4 text-gray-800 text-center">Selamat datang {{ Auth::user()->name }}, anda login sebagai
+            {{ Auth::user()->role->name }}</h1>
+
+        <!-- Menu Section -->
+        <div class="row">
+            <div class="col-md-4">
+                <a href="{{ url('/users') }}" class="btn btn-primary btn-lg btn-block">
+                    <i class="fas fa-user-plus"></i> Tambah User
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url('/shiftsforschedule') }}" class="btn btn-success btn-lg btn-block">
+                    <i class="fas fa-cogs"></i> Setting Shift
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url('/shift-assignment') }}" class="btn btn-warning btn-lg btn-block">
+                    <i class="fas fa-calendar-alt"></i> Atur Jadwal Shift
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+                },
             });
         });
     </script>

@@ -16,6 +16,12 @@ use App\Http\Controllers\AttendanceController;
 // use App\Http\Controllers\PresensiScController;
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\ShiftAssignmentController;
+
+Route::get('/shift-assignment', [ShiftAssignmentController::class, 'index'])->name('shift.assignment');
+Route::post('/shift-assign', [ShiftAssignmentController::class, 'assign'])->name('shift.assign');
+Route::delete('/shift-remove/{userId}/{shiftId}/{shiftDate}', [ShiftAssignmentController::class, 'remove'])->name('shift.remove');
+
 
 Route::get('/export-users', function () {
     return Excel::download(new UsersExport, 'users.xlsx');

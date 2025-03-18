@@ -5,7 +5,7 @@
         <?php
         $role = Auth::user()->role->name;
         ?>
-        @if ($role == 'Super Admin' || $role == 'Admin')
+        @if ($role == 'Super Admin' || $role == 'Kabid 4')
             <!-- Page Heading -->
             <h1 class="h3 mb-4 text-gray-800">Shift List</h1>
 

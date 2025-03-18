@@ -22,6 +22,7 @@
                                 <th>Tilawah</th>
                                 <th>Duha</th>
                                 <th>Mendoakan</th>
+                                <th>Mendoakan</th>
                                 {{-- <th>Aksi</th> --}}
                             </tr>
                         </thead>
@@ -43,6 +44,7 @@
                                     <td>{{ $data['tilawah'] }}</td>
                                     <td>{{ $data['duha'] }}</td>
                                     <td>{{ $data['mendoakan_siswa'] == 1 ? 'Ya' : 'Tidak' }}</td>
+                                    <td>{{ $data['created_at'] }}</td>
                                     {{-- <td>
                                         <a href="{{ url('/study/delete', encrypt($data['id'])) }}" class="btn btn-danger"
                                             onclick="return confirm('Yakin akan dihapus?')">Hapus</a>
