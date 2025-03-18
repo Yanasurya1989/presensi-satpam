@@ -9,12 +9,26 @@ use Illuminate\Support\Facades\DB;
 
 class ShiftAssignmentController extends Controller
 {
+    // public function index()
+    // {
+    //     $users = User::with('shifts')->get();
+    //     $shifts = Shift::all();
+    //     return view('shifts.assign', compact('users', 'shifts'));
+    // }
+
     public function index()
     {
-        $users = User::with('shifts')->get();
+        // Ambil hanya user dengan role "security"
+        $users = User::with('shifts')->whereHas('role', function ($query) {
+            $query->where('name', 'scurity');
+        })->get();
+
+        // Ambil semua shift
         $shifts = Shift::all();
+
         return view('shifts.assign', compact('users', 'shifts'));
     }
+
 
     public function assign(Request $request)
     {

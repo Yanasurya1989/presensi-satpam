@@ -21,6 +21,12 @@ class User extends Authenticatable
         'divisi'
     ];
 
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
+
     public function shifts()
     {
         return $this->belongsToMany(Shift::class, 'user_shifts')->withPivot('shift_date')->withTimestamps();
@@ -50,10 +56,6 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function role()
-    {
-        return $this->belongsTo(Role::class, 'role_id', 'id');
-    }
 
 
     /**
