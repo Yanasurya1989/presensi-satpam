@@ -158,6 +158,21 @@
     <canvas id="rekapChart"></canvas>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script>
+        document.querySelector("form").addEventListener("submit", function(event) {
+            let weekStart = document.getElementById("week_start").value;
+            let weekEnd = document.getElementById("week_end").value;
+
+            if (!weekStart || !weekEnd) {
+                event.preventDefault();
+                alert("Tanggal mulai dan berakhir harus diisi!");
+            } else {
+                console.log("Tanggal Mulai:", weekStart);
+                console.log("Tanggal Berakhir:", weekEnd);
+            }
+        });
+    </script>
+
 
 </body>
 

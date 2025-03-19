@@ -6,7 +6,7 @@
         
         $role = Auth::user()->role->name;
         ?>
-        @if ($role == 'Super Admin' || $role == 'Admin')
+        @if ($role == 'Super Admin' || $role == 'Scurity')
             <!-- Page Heading -->
             <h1 class="h3 mb-4 text-gray-800">Presensi Karyawan</h1>
 
@@ -36,16 +36,40 @@
                                     </center>
                                 </div>
                                 <center>
+                                    {{-- update untuk set halaman hanya untuk yang punya shift dimulai --}}
+                                    <div class="col mb-3">
+                                        <input type="hidden" id="lokasi" name="lokasi">
+                                        <input type="hidden" id="image" name="image">
+                                        <div class="webcam-capture"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @if ($isShiftActive)
+                                            @if ($cek > 0)
+                                                <button type="submit" class="btn btn-danger" id="take-absen">Klik Untuk
+                                                    Presensi Pulang</button>
+                                            @else
+                                                <button type="submit" class="btn btn-primary" id="take-absen">Klik Untuk
+                                                    Presensi Masuk</button>
+                                            @endif
+                                        @else
+                                            <h5 class="text-danger">Anda belum terjadwal untuk bertugas saat ini.</h5>
+                                        @endif
+                                    </div>
+
+                                    {{-- batas akhir update set halaman sesuai jadwal shift --}}
+
+
                                     <div class="col mb-3">
                                         {{-- <input type="hidden" id="lokasi"> --}}
-                                        <input type="text" id="lokasi" name="lokasi">
+                                        {{-- <input type="text" id="lokasi" name="lokasi">
                                         <input type="text" id="image" name="image">
 
-                                        <div class="webcam-capture"></div>
+                                        <div class="webcam-capture"></div> --}}
 
                                     </div>
                                     <div class="form-group">
-                                        @if ($cek > 0)
+                                        {{-- @if ($cek > 0)
                                             <button type="submit" class="btn btn-danger" id="take-absen">Klik Untuk
                                                 Presensi Pulang
                                             </button>
@@ -54,7 +78,7 @@
                                                 Presensi Masuk
 
                                             </button>
-                                        @endif
+                                        @endif --}}
 
 
                                     </div>

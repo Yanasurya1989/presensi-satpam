@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DateTime;
 use DateTimeZone;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Kehadiran;
 use Illuminate\Http\Request;
@@ -18,12 +19,39 @@ class KehadiranController extends Controller
      */
     public function index()
     {
-        $hari_ini = date("Y-m-d");
-        $id = Auth::user()->id;
-        $cek = DB::table('selfi_presensi')->where('tgl_presensi', $hari_ini)->where('id', $id)->count();
+        // $hari_ini = date("Y-m-d");
+        // $id = Auth::user()->id;
+        // $cek = DB::table('selfi_presensi')->where('tgl_presensi', $hari_ini)->where('id', $id)->count();
 
         // return view('layout.Presensi.sc');
-        return view('layout.Presensi.presensi_masuk', compact('cek'));
+        // return view('layout.Presensi.presensi_masuk', compact('cek'));
+
+        // step pertama 
+        $hari_ini = date("Y-m-d");
+        $id = Auth::user()->id;
+        $currentTime = date("H:i:s");
+
+        // Cek apakah user memiliki shift hari ini
+        $shift = DB::table('user_shifts')
+            ->join('shifts', 'user_shifts.shift_id', '=', 'shifts.id')
+            ->where('user_shifts.user_id', $id)
+            ->where('user_shifts.shift_date', $hari_ini)
+            ->whereTime('shifts.start_time', '<=', $currentTime)
+            ->whereTime('shifts.end_time', '>=', $currentTime)
+            ->first();
+
+        // Jika shift ditemukan, isShiftActive = true, jika tidak ditemukan isShiftActive = false
+        $isShiftActive = $shift ? true : false;
+
+        // Cek apakah sudah melakukan presensi
+        $cek = DB::table('selfi_presensi')
+            ->where('tgl_presensi', $hari_ini)
+            ->where('id', $id)
+            ->count();
+
+        // dd($shift, $isShiftActive, $currentTime);
+
+        return view('layout.Presensi.presensi_masuk', compact('cek', 'isShiftActive'));
     }
 
     public function out_sc()

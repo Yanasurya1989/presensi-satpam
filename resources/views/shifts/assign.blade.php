@@ -7,7 +7,7 @@
         ?>
         @if ($role == 'Super Admin' || $role == 'Kabid 4')
             <!-- Page Heading -->
-            <h1 class="h3 mb-4 text-gray-800">Users List</h1>
+            <h1 class="h3 mb-4 text-gray-800">Jadwal Shift</h1>
 
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -18,6 +18,11 @@
                     @if (session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
+
+                    @if (session('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
+
 
                     <form action="{{ route('shift.assign') }}" method="POST">
                         @csrf
@@ -44,8 +49,10 @@
 
                         <div class="mb-3">
                             <label for="shift_date" class="form-label">Tanggal Shift</label>
-                            <input type="date" name="shift_date" id="shift_date" class="form-control" required>
+                            <input type="date" name="shift_date" id="shift_date" class="form-control"
+                                min="{{ date('Y-m-d') }}" required>
                         </div>
+
 
                         <button type="submit" class="btn btn-primary">Tetapkan Shift</button>
                     </form>
@@ -63,27 +70,27 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($users as $user)
-                                @foreach ($user->shifts as $shift)
-                                    <tr>
-                                        <td>{{ $user->name }}</td>
-                                        <td>{{ $shift->name }} ({{ $shift->start_time }} - {{ $shift->end_time }})</td>
-                                        <td>{{ $shift->pivot->shift_date }}</td>
-                                        <td>
-                                            <form
-                                                action="{{ route('shift.remove', ['userId' => $user->id, 'shiftId' => $shift->id, 'shiftDate' => $shift->pivot->shift_date]) }}"
-                                                method="POST"
-                                                onsubmit="return confirm('Yakin ingin menghapus shift ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger">Hapus</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
+                            @foreach ($userShifts as $userShift)
+                                <tr>
+                                    <td>{{ $userShift->user->name }}</td>
+                                    <td>{{ $userShift->shift->name }} ({{ $userShift->shift->start_time }} -
+                                        {{ $userShift->shift->end_time }})</td>
+                                    <td>{{ $userShift->shift_date }}</td>
+                                    <td>
+                                        <form action="{{ route('user-shifts.destroy', $userShift->id) }}" method="POST"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus shift ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Hapus</button>
+                                        </form>
+                                    </td>
+                                </tr>
                             @endforeach
+
                         </tbody>
                     </table>
+
+
                 </div>
             </div>
         @else

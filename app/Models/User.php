@@ -32,6 +32,20 @@ class User extends Authenticatable
         return $this->belongsToMany(Shift::class, 'user_shifts')->withPivot('shift_date')->withTimestamps();
     }
 
+    // public function shifts()
+    // {
+    //     return $this->belongsToMany(Shift::class, 'user_shifts')
+    //         ->withPivot('shift_date')
+    //         ->withTimestamps();
+    // }
+
+    // public function shifts()
+    // {
+    //     return $this->belongsToMany(Shift::class, 'user_shifts')
+    //         ->withPivot('week_start', 'week_end');
+    // }
+
+
     public function report()
     {
         return $this->hasMany(Report::class, 'id_user');

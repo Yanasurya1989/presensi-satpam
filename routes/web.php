@@ -18,9 +18,17 @@ use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\ShiftAssignmentController;
 
+Route::get('/cek-timezone', function () {
+    return date('Y-m-d H:i:s') . ' - ' . date_default_timezone_get();
+});
+
+
 Route::get('/shift-assignment', [ShiftAssignmentController::class, 'index'])->name('shift.assignment');
 Route::post('/shift-assign', [ShiftAssignmentController::class, 'assign'])->name('shift.assign');
+Route::post('/shift-assign', [ShiftAssignmentController::class, 'store'])->name('shift.assign');
 Route::delete('/shift-remove/{userId}/{shiftId}/{shiftDate}', [ShiftAssignmentController::class, 'remove'])->name('shift.remove');
+// Route::delete('/shift-remove/{userId}/{shiftId}/{weekStart}/{weekEnd}', [ShiftController::class, 'remove'])->name('shift.remove');
+Route::delete('/user-shifts/{id}', [ShiftAssignmentController::class, 'destroy'])->name('user-shifts.destroy');
 
 
 Route::get('/export-users', function () {

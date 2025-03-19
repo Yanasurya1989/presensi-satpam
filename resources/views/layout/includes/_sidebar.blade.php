@@ -9,7 +9,7 @@
             <?php
             $role = Auth::user()->role->name;
             ?>
-            @if ($role == 'Kabid 4')
+            @if ($role == 'Kabid 4' || 'Scurity')
                 Presensi
             @else
                 Mutaba'ah yaumiyah
@@ -56,7 +56,7 @@
     <?php
     $role = Auth::user()->role->name;
     ?>
-    @if ($role == 'Kabid 4')
+    @if ($role == 'Kabid 4' || 'Scurity')
         <p style="display: none"> - </p>
     @else
         <li class="nav-item">
@@ -122,19 +122,24 @@
             </a>
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
-                    <?php
-                    $role = Auth::user()->role->name;
-                    ?>
+                    @php
+                        $role = Auth::user()->role->name;
+                    @endphp
+
                     @if ($role == 'Kabid 4')
-                        <p style="display: none"> - </p>
-                    @else
+                        <a class="collapse-item" href="{{ url('/shiftsforschedule') }}">Shift</a>
+                        <a class="collapse-item" href="{{ url('/shift-assignment') }}">Pembagian Shift</a>
+                    @elseif ($role == 'Security')
+                        <a class="collapse-item" href="{{ url('/presensi-sc') }}">Presensi Masuk</a>
+                        <a class="collapse-item" href="{{ url('/presensi-keluar') }}">Presensi Pulang</a>
+                        <a class="collapse-item" href="{{ url('/filter-data') }}">Rekap Presensi</a>
+                    @elseif ($role == 'Super Admin')
+                        <a class="collapse-item" href="{{ url('/shiftsforschedule') }}">Shift</a>
+                        <a class="collapse-item" href="{{ url('/shift-assignment') }}">Pembagian Shift</a>
                         <a class="collapse-item" href="{{ url('/presensi-sc') }}">Presensi Masuk</a>
                         <a class="collapse-item" href="{{ url('/presensi-keluar') }}">Presensi Pulang</a>
                         <a class="collapse-item" href="{{ url('/filter-data') }}">Rekap Presensi</a>
                     @endif
-
-                    <a class="collapse-item" href="{{ url('/shiftsforschedule') }}">Shift</a>
-                    <a class="collapse-item" href="{{ url('/shift-assignment') }}">Pembagian Shift</a>
                 </div>
             </div>
         </li>
