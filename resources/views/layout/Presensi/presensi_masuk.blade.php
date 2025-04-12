@@ -43,7 +43,7 @@
                                         <div class="webcam-capture"></div>
                                     </div>
 
-                                    <div class="form-group">
+                                    {{-- <div class="form-group">
                                         @if ($isShiftActive)
                                             @if ($cek > 0)
                                                 <button type="submit" class="btn btn-danger" id="take-absen">Klik Untuk
@@ -55,10 +55,35 @@
                                         @else
                                             <h5 class="text-danger">Anda belum terjadwal untuk bertugas saat ini.</h5>
                                         @endif
-                                    </div>
+                                    </div> --}}
 
                                     {{-- batas akhir update set halaman sesuai jadwal shift --}}
 
+                                    <form method="POST" action="{{ route('attendance.store') }}">
+                                        @csrf
+                                        <input type="hidden" id="latitude" name="latitude">
+                                        <input type="hidden" id="longitude" name="longitude">
+                                        <input type="hidden" id="photo" name="photo">
+
+                                        @if ($isShiftActive)
+                                            @if ($cek > 0)
+                                                <button type="submit" class="btn btn-danger">Klik Untuk Presensi
+                                                    Pulang</button>
+                                            @else
+                                                <button type="submit" class="btn btn-primary">Klik Untuk Presensi
+                                                    Masuk</button>
+                                            @endif
+                                        @else
+                                            <h5 class="text-danger">Anda belum terjadwal untuk bertugas saat ini.</h5>
+                                        @endif
+
+                                        <a href="{{ route('lembur.create') }}" class="btn btn-warning">Lembur</a>
+
+                                        {{-- jika mau diset tombol muncul di jam2 tertentu --}}
+                                        {{-- @if (now()->format('H:i') >= '17:00')
+                                            <a href="{{ route('lembur.index') }}" class="btn btn-warning">Lembur</a>
+                                        @endif --}}
+                                    </form>
 
                                     <div class="col mb-3">
                                         {{-- <input type="hidden" id="lokasi"> --}}
@@ -211,5 +236,31 @@
             // })
 
         })
+    </script>
+
+    <script>
+        navigator.geolocation.getCurrentPosition(function(position) {
+            document.getElementById('latitude').value = position.coords.latitude;
+            document.getElementById('longitude').value = position.coords.longitude;
+        });
+
+        function takePhoto() {
+            let canvas = document.createElement("canvas");
+            let context = canvas.getContext("2d");
+            let video = document.createElement("video");
+
+            navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.play();
+                    setTimeout(() => {
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        document.getElementById("photo").value = canvas.toDataURL("image/png");
+                        stream.getTracks().forEach(track => track.stop());
+                    }, 3000);
+                });
+        }
     </script>
 @endpush

@@ -17,6 +17,15 @@ use App\Http\Controllers\AttendanceController;
 use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\ShiftAssignmentController;
+use App\Http\Controllers\OvertimeController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/lembur', [OvertimeController::class, 'index'])->name('lembur.index');
+    Route::get('/lembur/create', [OvertimeController::class, 'create'])->name('lembur.create');
+    Route::post('/lembur', [OvertimeController::class, 'store'])->name('lembur.store');
+});
+
+Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
 
 Route::get('/cek-timezone', function () {
     return date('Y-m-d H:i:s') . ' - ' . date_default_timezone_get();

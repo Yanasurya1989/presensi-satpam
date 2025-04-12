@@ -7,6 +7,7 @@ use DateTimeZone;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Kehadiran;
+use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -97,30 +98,7 @@ class KehadiranController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $user = Auth::user();
-        $timezone = 'Asia/Jakarta';
-        $date = new DateTime('now', new DateTimeZone($timezone));
-        $tanggal = $date->format('Y-m-d');
-        $localtime = $date->format('H:i:s');
 
-        $kehadiran = Kehadiran::where([
-            ['id_user', '=', $user->id],
-            ['tanggal', '=', $tanggal],
-        ])->first();
-
-        if ($kehadiran) {
-            dd("geus aya");
-        } else {
-            Kehadiran::created([
-                'id_user' => $user->id,
-                'tanggal' => $tanggal,
-                'jam_masuk' => $localtime,
-            ]);
-        }
-        return redirect('/presensi-sc');
-    }
 
     public function outsc()
     {
@@ -180,52 +158,153 @@ class KehadiranController extends Controller
         //
     }
 
+    // public function store(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $timezone = 'Asia/Jakarta';
+    //     $date = new DateTime('now', new DateTimeZone($timezone));
+    //     $tanggal = $date->format('Y-m-d');
+    //     $localtime = $date->format('H:i:s');
+
+    //     $kehadiran = Kehadiran::where([
+    //         ['id_user', '=', $user->id],
+    //         ['tanggal', '=', $tanggal],
+    //     ])->first();
+
+    //     if ($kehadiran) {
+    //         dd("geus aya");
+    //     } else {
+    //         Kehadiran::created([
+    //             'id_user' => $user->id,
+    //             'tanggal' => $tanggal,
+    //             'jam_masuk' => $localtime,
+    //         ]);
+    //     }
+    //     return redirect('/presensi-sc');
+    // }
+
+    public function store(Request $request)
+    {
+        $user = Auth::user();
+        $timezone = 'Asia/Jakarta';
+        $date = new DateTime('now', new DateTimeZone($timezone));
+        $tanggal = $date->format('Y-m-d');
+        $localtime = $date->format('H:i:s');
+
+        $kehadiran = Attendance::where([
+            ['user_id', '=', $user->id],
+            ['created_at', 'LIKE', "$tanggal%"] // Cek jika sudah absen hari ini
+        ])->first();
+
+        if ($kehadiran) {
+            return redirect()->back()->with('error', 'Anda sudah absen hari ini!');
+        }
+
+        if ($request->has('photo')) {
+            $image = $request->photo;
+            $folderPath = "public/uploads/absensi/";
+            $fileName = $user->id . "-" . $tanggal . ".png";
+            $filePath = $folderPath . $fileName;
+
+            $image_parts = explode(";base64,", $image);
+            if (count($image_parts) > 1) {
+                $image_base64 = base64_decode($image_parts[1]);
+                Storage::put($filePath, $image_base64);
+            }
+        }
+
+
+        Attendance::create([
+            'user_id' => $user->id,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'photo' => $request->photo, // Jika ada input foto
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect('/presensi-sc')->with('success', 'Presensi berhasil disimpan!');
+    }
+
+    // public function sendpresensi(Request $request)
+    // {
+    //     $id = Auth::guard('users')->user()->id;
+    //     $tanggal_presensi = date("Y-m-d");
+    //     $jam = date("H:i:s");
+    //     $lokasi = $request->lokasi;
+    //     $image = $request->image;
+    //     $folderPath = "public/uploads/absensi/";
+    //     $formatName = $id . "-" . $tanggal_presensi;
+    //     $image_parts = explode(";base64", $image);
+    //     $image_base64 = base64_decode($image_parts[1]);
+    //     $filename = $formatName . ".png";
+    //     $file = $folderPath . $filename;
+
+    //     $cek = DB::table('presensi')->where('tanggal_presensi', $tanggal_presensi)->where('id', $id)->count();
+    //     if ($cek > 0) {
+    //         $data_pulang = [
+
+    //             'jam_out' => $jam,
+    //             'foto_out' => $filename,
+    //             'lokasi_out' => $lokasi
+    //         ];
+    //         $update = DB::table('presensi')->where('tanggal_presensi', $tanggal_presensi)->where('id', $id)->count();
+    //         if ($update) {
+    //             echo "success|titidije|out";
+    //             Storage::put($file, $image_base64);
+    //         } else {
+    //             echo "error|Maaf gagal absen|out";
+    //         }
+    //     } else {
+    //         $data = [
+    //             'id' => $id,
+    //             'tanggal_presensi' => $tanggal_presensi,
+    //             'jam_in' => $jam,
+    //             'foto_in' => $filename,
+    //             'lokasi_in' => $lokasi
+    //         ];
+    //         $simpan = DB::table('presensi')->insert($data);
+    //         if ($simpan) {
+    //             echo 'success|selamat bekerja|in';
+    //             Storage::put($file, $image_base64);
+    //         } else {
+    //             echo "error|Maaf gagal absen|in";
+    //         }
+    //     }
+    // }
+
     public function sendpresensi(Request $request)
     {
-        $id = Auth::guard('users')->user()->id;
+        $id = Auth::id();
         $tanggal_presensi = date("Y-m-d");
         $jam = date("H:i:s");
         $lokasi = $request->lokasi;
         $image = $request->image;
-        $folderPath = "public/uploads/absensi/";
-        $formatName = $id . "-" . $tanggal_presensi;
-        $image_parts = explode(";base64", $image);
-        $image_base64 = base64_decode($image_parts[1]);
-        $filename = $formatName . ".png";
-        $file = $folderPath . $filename;
 
-        $cek = DB::table('presensi')->where('tanggal_presensi', $tanggal_presensi)->where('id', $id)->count();
-        if ($cek > 0) {
-            $data_pulang = [
+        // Cek apakah user sudah absen masuk
+        $cek = Attendance::where('user_id', $id)->whereDate('created_at', $tanggal_presensi)->first();
 
-                'jam_out' => $jam,
-                'foto_out' => $filename,
-                'lokasi_out' => $lokasi
-            ];
-            $update = DB::table('presensi')->where('tanggal_presensi', $tanggal_presensi)->where('id', $id)->count();
-            if ($update) {
-                echo "success|titidije|out";
-                Storage::put($file, $image_base64);
-            } else {
-                echo "error|Maaf gagal absen|out";
-            }
+        if ($cek) {
+            // Jika sudah masuk, update jam keluar dan foto keluar
+            $cek->update([
+                'updated_at' => now(),
+                'photo' => $image // Gantilah ini dengan foto keluar jika ada field khusus untuk foto pulang
+            ]);
+            return response()->json(['status' => 'success', 'message' => 'Presensi pulang berhasil!']);
         } else {
-            $data = [
-                'id' => $id,
-                'tanggal_presensi' => $tanggal_presensi,
-                'jam_in' => $jam,
-                'foto_in' => $filename,
-                'lokasi_in' => $lokasi
-            ];
-            $simpan = DB::table('presensi')->insert($data);
-            if ($simpan) {
-                echo 'success|selamat bekerja|in';
-                Storage::put($file, $image_base64);
-            } else {
-                echo "error|Maaf gagal absen|in";
-            }
+            // Simpan data baru untuk presensi masuk
+            Attendance::create([
+                'user_id' => $id,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'photo' => $image,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            return response()->json(['status' => 'success', 'message' => 'Presensi masuk berhasil!']);
         }
     }
+
 
     public function kirim_hadir(Request $request)
     {
