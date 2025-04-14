@@ -173,7 +173,36 @@
         });
     </script>
 
+    @push('scripts')
+        <script>
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const photoInput = document.getElementById('photoInput');
+            const submitBtn = document.getElementById('submitBtn');
 
+            // Aktifkan webcam
+            navigator.mediaDevices.getUserMedia({
+                    video: true
+                })
+                .then((stream) => {
+                    video.srcObject = stream;
+                })
+                .catch((err) => {
+                    console.error("Webcam tidak bisa diakses:", err);
+                });
+
+            function takeSnapshot() {
+                const context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL('image/png');
+                photoInput.value = imageData;
+                submitBtn.disabled = false;
+                alert('Foto berhasil diambil. Silakan klik tombol presensi.');
+            }
+        </script>
+    @endpush
+
+    @stack('scripts')
 </body>
 
 </html>

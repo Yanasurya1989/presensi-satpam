@@ -18,6 +18,30 @@ use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\ShiftAssignmentController;
 use App\Http\Controllers\OvertimeController;
+use App\Http\Controllers\PresensiController;
+
+// ulangi proses presensi
+use App\Http\Controllers\PresenceController;
+
+Route::post('/presence', [PresenceController::class, 'store'])->name('presence.store');
+// Route::get('/view_presence', [PresenceController::class, 'index']);
+// Route::get('/view_presence', [ShiftAssignmentController::class, 'presensiForm'])->name('presence.form');
+Route::get('/view_presence', [PresenceController::class, 'presensiForm'])->name('presence.form');
+Route::get('/rekap-presensi', [PresenceController::class, 'rekap'])->name('presence.rekap');
+Route::get('/rekap-admin', [PresenceController::class, 'rekapAdmin'])->name('presence.rekapAdmin');
+Route::get('/rekap/export', [PresenceController::class, 'export'])->name('rekap.export');
+
+
+
+// akhir pengulangan pembuatan presensi
+
+Route::middleware(['auth'])->group(function () {
+    // Route::post('/presensi/store', [PresensiController::class, 'store'])->name('attendance.store');
+    Route::post('/attendance/store', [PresensiController::class, 'store'])->name('attendance.store');
+    // Route::middleware('auth:sanctum')->post('/attendance', [PresensiController::class, 'store'])->name('attendance.store');
+    // Route::middleware('auth:sanctum')->get('/attendance/report', [PresensiController::class, 'report']);
+});
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/lembur', [OvertimeController::class, 'index'])->name('lembur.index');
@@ -25,7 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lembur', [OvertimeController::class, 'store'])->name('lembur.store');
 });
 
-Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
+
 
 Route::get('/cek-timezone', function () {
     return date('Y-m-d H:i:s') . ' - ' . date_default_timezone_get();
@@ -99,9 +123,7 @@ Route::post('/save-timestamp', [KehadiranController::class, 'create'])->name('sa
 Route::get('/shifts', [ShiftController::class, 'index']);
 Route::get('/shiftsforschedule', [ShiftController::class, 'siftforschedule']);
 
-// Attendance
-Route::middleware('auth:sanctum')->post('/attendance', [AttendanceController::class, 'store']);
-Route::middleware('auth:sanctum')->get('/attendance/report', [AttendanceController::class, 'report']);
+
 
 Route::middleware(['auth:sanctum', 'admin'])->get('/admin/attendance', [AdminController::class, 'index']);
 

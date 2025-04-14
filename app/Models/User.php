@@ -99,4 +99,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Kehadiran::class);
     }
+
+    public function presences()
+    {
+        return $this->hasMany(Presence::class, 'user_id');
+    }
+
+    public function overtimes()
+    {
+        return $this->hasMany(\App\Models\Overtime::class, 'user_id');
+    }
 }

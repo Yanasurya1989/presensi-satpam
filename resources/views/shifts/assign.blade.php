@@ -83,6 +83,12 @@
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger">Hapus</button>
                                         </form>
+                                        <form action="{{ route('user-shifts.destroy', $userShift->id) }}" method="POST"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus shift ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-success">Update</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

@@ -80,7 +80,8 @@
                 </div>
             @elseif(Auth::user()->role->name == 'Scurity')
                 <div class="col-12">
-                    <a href="{{ url('/presensi-sc') }}"
+                    {{-- <a href="{{ url('/presensi-sc') }}" --}}
+                    <a href="{{ url('/view_presence') }}"
                         class="btn btn-info btn-lg btn-block d-flex align-items-center justify-content-center"
                         style="height: 100px; font-size: 24px;">
                         <i class="fas fa-check-circle"></i> <span class="ml-2">Presensi</span>

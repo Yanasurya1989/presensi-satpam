@@ -7,6 +7,8 @@ use App\Models\Shift;
 use App\Models\UserShift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ShiftAssignmentController extends Controller
 {
@@ -82,6 +84,7 @@ class ShiftAssignmentController extends Controller
 
     //     return view('shifts.assign', compact('users', 'shifts', 'userShifts'));
     // }
+
 
     public function index()
     {
@@ -233,5 +236,18 @@ class ShiftAssignmentController extends Controller
         $userShift->delete();
 
         return redirect()->back()->with('success', 'Shift berhasil dihapus.');
+    }
+
+    public function presensiForm()
+    {
+        $user = Auth::user();
+        $today = Carbon::today()->toDateString();
+
+        // Cek apakah user sudah dijadwalkan shift hari ini
+        $hasShiftToday = UserShift::where('user_id', $user->id)
+            ->where('shift_date', $today)
+            ->exists();
+
+        return view('layout.Presensi.absen', compact('hasShiftToday'));
     }
 }
