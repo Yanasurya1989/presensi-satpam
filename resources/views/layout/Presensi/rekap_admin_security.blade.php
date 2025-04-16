@@ -31,15 +31,14 @@
             {{-- <form action="{{ route('rekap.export') }}" method="GET">
                 <button type="submit" class="btn btn-success">Export Excel</button>
             </form> --}}
-            <form action="{{ route('rekap.export') }}" method="GET">
-                <input type="number" name="month" value="{{ now()->month }}" hidden>
-                <input type="number" name="year" value="{{ now()->year }}" hidden>
-                <button type="submit" class="btn btn-success">Export Excel</button>
-            </form>
+
         </form>
 
-
-
+        <form action="{{ route('rekap.export') }}" method="GET">
+            <input type="number" name="month" value="{{ now()->month }}" hidden>
+            <input type="number" name="year" value="{{ now()->year }}" hidden>
+            <button type="submit" class="btn btn-success">Export Excel</button>
+        </form><br>
 
         @if (request('month') && request('year'))
             <div class="alert alert-info">
@@ -61,6 +60,7 @@
                     <th>Nama</th>
                     <th>Jumlah Hari Hadir</th>
                     <th>Total Lembur</th>
+                    <th>Photo</th>
                 </tr>
             </thead>
             <tbody>
@@ -75,6 +75,14 @@
                                 $menit = $data['total_menit_lembur'] % 60;
                             @endphp
                             {{ $jam }} jam {{ $menit }} menit
+                        </td>
+                        <td>
+                            {{-- <pre>{{ print_r($data, true) }}</pre> --}}
+                            @if ($data['foto'])
+                                <img src="{{ asset('storage/' . $data['foto']) }}" alt="Foto Presensi" width="80">
+                            @else
+                                <span class="text-muted">Tidak ada foto</span>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

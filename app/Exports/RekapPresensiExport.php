@@ -21,8 +21,8 @@ class RekapPresensiExport implements FromCollection, WithHeadings
     {
         return User::with([
             'presences' => function ($query) {
-                $query->whereMonth('tgl_presensi', $this->month)
-                    ->whereYear('tgl_presensi', $this->year);
+                $query->whereMonth('tanggal', $this->month)
+                    ->whereYear('tanggal', $this->year);
             },
             'overtimes' => function ($query) {
                 $query->whereMonth('start_time', $this->month)

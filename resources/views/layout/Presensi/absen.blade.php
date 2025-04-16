@@ -29,7 +29,8 @@
                                     {{ \Carbon\Carbon::parse($presensiHariIni->jam)->format('H:i') }}.
                                 </div>
                             @else
-                                <form action="{{ route('presence.store') }}" method="POST">
+                                <form action="{{ route('presence.store') }}" method="POST"
+                                    onsubmit="return handleSubmit(event)">
                                     @csrf
 
                                     <div class="mb-3 text-start">
@@ -37,12 +38,6 @@
                                         <div class="ratio ratio-4x3 rounded overflow-hidden border">
                                             <video id="video" autoplay style="width: 100%; height: auto;"></video>
                                         </div>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <button type="button" class="btn btn-secondary w-100"
-                                            onclick="takeSnapshot()">Ambil
-                                            Foto</button>
                                     </div>
 
                                     <div class="mb-3">
@@ -54,7 +49,7 @@
                                     <input type="hidden" name="tipe" value="masuk">
 
                                     <div class="mb-3">
-                                        <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+                                        <button type="submit" class="btn btn-primary w-100" id="submitBtn" disabled>
                                             Klik Untuk Presensi Kedatangan
                                         </button>
                                     </div>
@@ -92,29 +87,50 @@
         const preview = document.getElementById('preview');
         const submitBtn = document.getElementById('submitBtn');
 
+        // Fungsi untuk ambil snapshot otomatis
+        function takeSnapshotAutomatically() {
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                const imageData = canvas.toDataURL('image/png');
+                photoInput.value = imageData;
+                preview.src = imageData;
+                preview.style.display = 'block';
+
+                // Aktifkan tombol submit setelah foto berhasil diambil
+                submitBtn.disabled = false;
+                console.log('Foto berhasil diambil otomatis.');
+            } else {
+                // Ulangi pengecekan jika video belum siap
+                setTimeout(takeSnapshotAutomatically, 300);
+            }
+        }
+
+        // Akses kamera dan jalankan otomatis ambil foto
         navigator.mediaDevices.getUserMedia({
                 video: true
             })
             .then(stream => {
                 video.srcObject = stream;
+                video.onloadedmetadata = () => {
+                    setTimeout(takeSnapshotAutomatically, 1000); // Tunggu sebentar agar kamera siap
+                };
             })
             .catch(err => {
                 alert("Tidak bisa mengakses kamera: " + err.message);
             });
 
-        function takeSnapshot() {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            const imageData = canvas.toDataURL('image/png');
-            photoInput.value = imageData;
-            preview.src = imageData;
-            preview.style.display = 'block';
-            submitBtn.disabled = false;
-
-            alert('Foto berhasil diambil. Silakan klik tombol presensi.');
+        // Validasi saat submit
+        function handleSubmit(e) {
+            if (!photoInput.value) {
+                e.preventDefault();
+                alert("Foto belum berhasil diambil.");
+                return false;
+            }
+            return true;
         }
     </script>
 @endpush

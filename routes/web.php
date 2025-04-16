@@ -62,6 +62,11 @@ Route::post('/shift-assign', [ShiftAssignmentController::class, 'store'])->name(
 Route::delete('/shift-remove/{userId}/{shiftId}/{shiftDate}', [ShiftAssignmentController::class, 'remove'])->name('shift.remove');
 // Route::delete('/shift-remove/{userId}/{shiftId}/{weekStart}/{weekEnd}', [ShiftController::class, 'remove'])->name('shift.remove');
 Route::delete('/user-shifts/{id}', [ShiftAssignmentController::class, 'destroy'])->name('user-shifts.destroy');
+Route::get('/user-shifts/{id}/edit', [ShiftAssignmentController::class, 'edit'])->name('user-shifts.edit');
+Route::put('/user-shifts/{id}', [ShiftAssignmentController::class, 'update'])->name('user-shifts.update');
+// Route::get('/user-shifts/{id}/edit', [ShiftAssignmentController::class, 'edit'])->name('user-shifts.edit');
+// Route::put('/user-shifts/{id}', [ShiftAssignmentController::class, 'update'])->name('user-shifts.update');
+
 
 
 Route::get('/export-users', function () {

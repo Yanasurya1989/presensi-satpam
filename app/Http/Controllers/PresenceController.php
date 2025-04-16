@@ -113,7 +113,47 @@ class PresenceController extends Controller
         ));
     }
 
+    // public function rekapAdmin(Request $request)
+    // {
+    //     $useFilter = false;
 
+    //     if ($request->filled('start') && $request->filled('end')) {
+    //         $useFilter = true;
+    //         $startDate = Carbon::parse($request->input('start'));
+    //         $endDate = Carbon::parse($request->input('end'));
+    //     } else {
+    //         $startDate = Carbon::now()->startOfMonth();
+    //         $endDate = (clone $startDate)->addMonth()->subDay();
+    //     }
+
+    //     $users = User::all();
+
+    //     $rekap = $users->map(function ($user) use ($useFilter, $startDate, $endDate) {
+    //         $queryPresensi = $user->presences();
+    //         if ($useFilter) {
+    //             $queryPresensi->whereBetween('tanggal', [$startDate->toDateString(), $endDate->toDateString()]);
+    //         }
+    //         $totalHadir = $queryPresensi->count();
+
+    //         $latestPresence = $queryPresensi->latest('tanggal')->first();
+    //         $foto = $latestPresence ? $latestPresence->photo : null;
+
+    //         $queryLembur = Overtime::where('user_id', $user->id);
+    //         if ($useFilter) {
+    //             $queryLembur->whereBetween('start_time', [$startDate, $endDate]);
+    //         }
+    //         $totalMenitLembur = $queryLembur->sum('total_minutes');
+
+    //         return [
+    //             'user' => $user,
+    //             'total_hadir' => $totalHadir,
+    //             'total_menit_lembur' => $totalMenitLembur,
+    //             'foto' => $foto,
+    //         ];
+    //     });
+
+    //     return view('layout.Presensi.rekap_admin_security', compact('rekap', 'useFilter', 'startDate', 'endDate'));
+    // }
 
     public function rekapAdmin(Request $request)
     {
@@ -132,10 +172,22 @@ class PresenceController extends Controller
 
         $rekap = $users->map(function ($user) use ($useFilter, $startDate, $endDate) {
             $queryPresensi = $user->presences();
+
             if ($useFilter) {
                 $queryPresensi->whereBetween('tanggal', [$startDate->toDateString(), $endDate->toDateString()]);
             }
-            $totalHadir = $queryPresensi->count();
+
+            // Untuk user dengan dua shift dalam sehari
+            if ($user->id == 30) {
+                // Hitung kehadiran berdasarkan jumlah tanggal unik
+                $totalHadir = $queryPresensi->distinct('tanggal')->count('tanggal');
+            } else {
+                // User biasa, hitung total presensi (asumsinya 1 shift per hari)
+                $totalHadir = $queryPresensi->count();
+            }
+
+            $latestPresence = $queryPresensi->latest('tanggal')->first();
+            $foto = $latestPresence ? $latestPresence->photo : null;
 
             $queryLembur = Overtime::where('user_id', $user->id);
             if ($useFilter) {
@@ -147,6 +199,7 @@ class PresenceController extends Controller
                 'user' => $user,
                 'total_hadir' => $totalHadir,
                 'total_menit_lembur' => $totalMenitLembur,
+                'foto' => $foto,
             ];
         });
 
@@ -158,6 +211,12 @@ class PresenceController extends Controller
     {
         $user = auth()->user();
         $now = now();
+
+        // Validasi input
+        $request->validate([
+            'photo' => 'required', // tambahkan validasi untuk foto
+            'tipe'  => 'required', // validasi tipe masuk/keluar (opsional, tapi baik ada)
+        ]);
 
         // Cek apakah sudah presensi hari ini
         $sudahPresensi = Presence::where('user_id', $user->id)
@@ -173,10 +232,12 @@ class PresenceController extends Controller
             'user_id' => $user->id,
             'tanggal' => $now->toDateString(),
             'jam'     => $now->toTimeString(),
+            'photo'   => $request->photo, // simpan base64 image ke database
         ]);
 
         return redirect()->back()->with('success', 'Presensi berhasil disimpan!');
     }
+
 
     public function presensiForm()
     {

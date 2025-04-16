@@ -76,7 +76,7 @@
                                     <td>{{ $userShift->shift->name }} ({{ $userShift->shift->start_time }} -
                                         {{ $userShift->shift->end_time }})</td>
                                     <td>{{ $userShift->shift_date }}</td>
-                                    <td>
+                                    {{-- <td>
                                         <form action="{{ route('user-shifts.destroy', $userShift->id) }}" method="POST"
                                             onsubmit="return confirm('Apakah Anda yakin ingin menghapus shift ini?');">
                                             @csrf
@@ -89,7 +89,29 @@
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-success">Update</button>
                                         </form>
+                                    </td> --}}
+                                    <td>
+                                        <form action="{{ route('user-shifts.destroy', $userShift->id) }}" method="POST"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus shift ini?');"
+                                            style="display: inline-block">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+
+                                        </form>
+                                        {{-- <a href="{{ route('user-shifts.edit', $userShift->id) }}"
+                                            class="btn btn-success">Update</a> --}}
+                                        {{-- <form action="{{ route('user-shifts.update', $userShift->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="btn btn-success">Update</button>
+                                        </form> --}}
+
+                                        <a href="{{ route('user-shifts.edit', $userShift->id) }}"
+                                            class="btn btn-success btn-sm">Edit</a>
+
                                     </td>
+
                                 </tr>
                             @endforeach
 

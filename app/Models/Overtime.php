@@ -26,4 +26,9 @@ class Overtime extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function presensi()
+    {
+        return $this->belongsTo(Presence::class, 'presensi_id');
+    }
 }
