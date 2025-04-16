@@ -65,26 +65,27 @@
             </thead>
             <tbody>
                 @foreach ($rekap as $index => $data)
-                    <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td>{{ $data['user']->name }}</td>
-                        <td>{{ $data['total_hadir'] }} Hari</td>
-                        <td>
-                            @php
-                                $jam = floor($data['total_menit_lembur'] / 60);
-                                $menit = $data['total_menit_lembur'] % 60;
-                            @endphp
-                            {{ $jam }} jam {{ $menit }} menit
-                        </td>
-                        <td>
-                            {{-- <pre>{{ print_r($data, true) }}</pre> --}}
-                            @if ($data['foto'])
-                                <img src="{{ asset('storage/' . $data['foto']) }}" alt="Foto Presensi" width="80">
-                            @else
-                                <span class="text-muted">Tidak ada foto</span>
-                            @endif
-                        </td>
-                    </tr>
+                    @if ($data['user']->role->name === 'Scurity')
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $data['user']->name }}</td>
+                            <td>{{ $data['total_hadir'] }} Hari</td>
+                            <td>
+                                @php
+                                    $jam = floor($data['total_menit_lembur'] / 60);
+                                    $menit = $data['total_menit_lembur'] % 60;
+                                @endphp
+                                {{ $jam }} jam {{ $menit }} menit
+                            </td>
+                            <td>
+                                @if ($data['foto'])
+                                    <img src="{{ asset('storage/' . $data['foto']) }}" alt="Foto Presensi" width="80">
+                                @else
+                                    <span class="text-muted">Tidak ada foto</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endif
                 @endforeach
             </tbody>
         </table>

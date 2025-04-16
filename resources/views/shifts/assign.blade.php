@@ -31,7 +31,10 @@
                             <select name="user_id" id="user_id" class="form-control" required>
                                 <option value="">-- Pilih Karyawan --</option>
                                 @foreach ($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    {{-- <option value="{{ $user->id }}">{{ $user->name }}</option> --}}
+                                    @if ($user->role->name === 'Scurity')
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
