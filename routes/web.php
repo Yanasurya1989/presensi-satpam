@@ -19,9 +19,14 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\ShiftAssignmentController;
 use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\PresensiController;
-
-// ulangi proses presensi
 use App\Http\Controllers\PresenceController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/inval/create', [App\Http\Controllers\InvalController::class, 'create'])->name('inval.create');
+    Route::post('/inval/store', [App\Http\Controllers\InvalController::class, 'store'])->name('inval.store');
+    Route::get('/inval', [App\Http\Controllers\InvalController::class, 'index'])->name('inval.index');
+});
+
 
 Route::post('/presence', [PresenceController::class, 'store'])->name('presence.store');
 // Route::get('/view_presence', [PresenceController::class, 'index']);
@@ -30,6 +35,7 @@ Route::get('/view_presence', [PresenceController::class, 'presensiForm'])->name(
 Route::get('/rekap-presensi', [PresenceController::class, 'rekap'])->name('presence.rekap');
 Route::get('/rekap-admin', [PresenceController::class, 'rekapAdmin'])->name('presence.rekapAdmin');
 Route::get('/rekap/export', [PresenceController::class, 'export'])->name('rekap.export');
+Route::get('/rekap/harian', [PresenceController::class, 'rekapHarian'])->name('rekap.harian');
 
 
 
@@ -45,8 +51,9 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/lembur', [OvertimeController::class, 'index'])->name('lembur.index');
-    Route::get('/lembur/create', [OvertimeController::class, 'create'])->name('lembur.create');
+    // Route::get('/lembur/create', [OvertimeController::class, 'create'])->name('lembur.create');
     Route::post('/lembur', [OvertimeController::class, 'store'])->name('lembur.store');
+    Route::get('/lembur/create/{shift}', [OvertimeController::class, 'create'])->name('lembur.create');
 });
 
 

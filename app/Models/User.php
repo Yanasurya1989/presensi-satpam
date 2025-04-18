@@ -32,61 +32,17 @@ class User extends Authenticatable
         return $this->belongsToMany(Shift::class, 'user_shifts')->withPivot('shift_date')->withTimestamps();
     }
 
-    // public function shifts()
-    // {
-    //     return $this->belongsToMany(Shift::class, 'user_shifts')
-    //         ->withPivot('shift_date')
-    //         ->withTimestamps();
-    // }
-
-    // public function shifts()
-    // {
-    //     return $this->belongsToMany(Shift::class, 'user_shifts')
-    //         ->withPivot('week_start', 'week_end');
-    // }
-
-
     public function report()
     {
         return $this->hasMany(Report::class, 'id_user');
         // return $this->hasMany(Report::class);
     }
 
-    /**
-     * Get the user that owns the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-
-
-    // public function rekap()
-    // {
-    //     return $this->hasMany(Rekap::class);
-    // }
-
-
-    /**
-     * Get the user that owns the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [

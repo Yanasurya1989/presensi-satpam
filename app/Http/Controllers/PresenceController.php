@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\Presence;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use App\Models\Shift;
 use App\Models\Overtime;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\RekapPresensiExport;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Presence;
 use App\Models\UserShift;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Exports\RekapPresensiExport;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PresenceController extends Controller
 {
@@ -48,29 +49,6 @@ class PresenceController extends Controller
 
         return view('layout.Presensi.absen', compact('jumlahHariHadir'));
     }
-
-    // public function rekap(Request $request)
-    // {
-    //     $user = auth()->user();
-
-    //     // Ambil bulan dan tahun dari request (default: bulan dan tahun sekarang)
-    //     $month = $request->input('month', now()->month);
-    //     $year = $request->input('year', now()->year);
-
-    //     // Ambil semua presensi user untuk bulan dan tahun tersebut
-    //     $presences = Presence::where('user_id', $user->id)
-    //         ->whereMonth('tanggal', $month)
-    //         ->whereYear('tanggal', $year)
-    //         ->orderBy('tanggal', 'asc')
-    //         ->get();
-
-    //     // Hitung total hari hadir (tanggal unik)
-    //     $totalHariPerUser = [
-    //         $user->id => $presences->unique('tanggal')->count(),
-    //     ];
-
-    //     return view('layout.Presensi.rekap_security', compact('presences', 'month', 'year', 'totalHariPerUser'));
-    // }
 
     // nambahin field lembur
     public function rekap(Request $request)
@@ -112,48 +90,6 @@ class PresenceController extends Controller
             'lembur' // <- kirim ke blade
         ));
     }
-
-    // public function rekapAdmin(Request $request)
-    // {
-    //     $useFilter = false;
-
-    //     if ($request->filled('start') && $request->filled('end')) {
-    //         $useFilter = true;
-    //         $startDate = Carbon::parse($request->input('start'));
-    //         $endDate = Carbon::parse($request->input('end'));
-    //     } else {
-    //         $startDate = Carbon::now()->startOfMonth();
-    //         $endDate = (clone $startDate)->addMonth()->subDay();
-    //     }
-
-    //     $users = User::all();
-
-    //     $rekap = $users->map(function ($user) use ($useFilter, $startDate, $endDate) {
-    //         $queryPresensi = $user->presences();
-    //         if ($useFilter) {
-    //             $queryPresensi->whereBetween('tanggal', [$startDate->toDateString(), $endDate->toDateString()]);
-    //         }
-    //         $totalHadir = $queryPresensi->count();
-
-    //         $latestPresence = $queryPresensi->latest('tanggal')->first();
-    //         $foto = $latestPresence ? $latestPresence->photo : null;
-
-    //         $queryLembur = Overtime::where('user_id', $user->id);
-    //         if ($useFilter) {
-    //             $queryLembur->whereBetween('start_time', [$startDate, $endDate]);
-    //         }
-    //         $totalMenitLembur = $queryLembur->sum('total_minutes');
-
-    //         return [
-    //             'user' => $user,
-    //             'total_hadir' => $totalHadir,
-    //             'total_menit_lembur' => $totalMenitLembur,
-    //             'foto' => $foto,
-    //         ];
-    //     });
-
-    //     return view('layout.Presensi.rekap_admin_security', compact('rekap', 'useFilter', 'startDate', 'endDate'));
-    // }
 
     public function rekapAdmin(Request $request)
     {
@@ -238,22 +174,66 @@ class PresenceController extends Controller
         return redirect()->back()->with('success', 'Presensi berhasil disimpan!');
     }
 
-
     public function presensiForm()
     {
         $user = Auth::user();
         $today = Carbon::today()->toDateString();
 
-        // Cek apakah user sudah dijadwalkan shift hari ini
-        $hasShiftToday = UserShift::where('user_id', $user->id)
+        // Ambil shift user hari ini
+        $userShiftToday = UserShift::where('user_id', $user->id)
             ->where('shift_date', $today)
-            ->exists();
+            ->with('shift')
+            ->first();
+
+        $hasShiftToday = $userShiftToday !== null;
+
+        // Default false
+        $isShiftNow = false;
+
+        if ($userShiftToday && $userShiftToday->shift) {
+            $now = Carbon::now();
+            $startTime = Carbon::parse($userShiftToday->shift->start_time);
+            $endTime = Carbon::parse($userShiftToday->shift->end_time);
+
+            // Penanganan shift yang melewati tengah malam
+            if ($endTime->lessThan($startTime)) {
+                $endTime->addDay();
+            }
+
+            $isShiftNow = $now->between($startTime, $endTime);
+        }
 
         // Cek apakah user sudah presensi hari ini
         $presensiHariIni = Presence::where('user_id', $user->id)
             ->whereDate('tanggal', $today)
-            ->first(); // null kalau belum presensi
+            ->first();
 
-        return view('layout.Presensi.absen', compact('hasShiftToday', 'presensiHariIni'));
+        return view('layout.Presensi.absen', compact(
+            'hasShiftToday',
+            'isShiftNow',
+            'presensiHariIni',
+            'userShiftToday'
+        ));
+    }
+
+
+    public function rekapHarian(Request $request)
+    {
+        $user = auth()->user();
+
+        // Ambil tanggal dari request atau default ke hari ini
+        $tanggal = $request->input('tanggal', now()->toDateString());
+
+        // Ambil presensi user di tanggal tersebut
+        $presences = Presence::where('user_id', $user->id)
+            ->whereDate('tanggal', $tanggal)
+            ->get();
+
+        // Ambil lembur user di tanggal tersebut
+        $lembur = Overtime::where('user_id', $user->id)
+            ->whereDate('start_time', $tanggal)
+            ->get();
+
+        return view('layout.Presensi.rekap_harian', compact('presences', 'lembur', 'tanggal'));
     }
 }

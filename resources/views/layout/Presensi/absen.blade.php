@@ -26,34 +26,45 @@
                             @if ($presensiHariIni)
                                 <div class="alert alert-success">
                                     Anda sudah presensi pada jam
-                                    {{ \Carbon\Carbon::parse($presensiHariIni->jam)->format('H:i') }}.
+                                    {{ \Carbon\Carbon::parse($presensiHariIni->jam)->format('H:i') }} (Shift
+                                    {{ $userShiftToday->shift->shift_name }}).
                                 </div>
                             @else
-                                <form action="{{ route('presence.store') }}" method="POST"
-                                    onsubmit="return handleSubmit(event)">
-                                    @csrf
+                                @if ($isShiftNow)
+                                    <form action="{{ route('presence.store') }}" method="POST"
+                                        onsubmit="return handleSubmit(event)">
+                                        @csrf
 
-                                    <div class="mb-3 text-start">
-                                        <label for="video" class="form-label">Preview Kamera</label>
-                                        <div class="ratio ratio-4x3 rounded overflow-hidden border">
-                                            <video id="video" autoplay style="width: 100%; height: auto;"></video>
+                                        <div class="mb-3 text-start">
+                                            <label for="video" class="form-label">Preview Kamera (Shift
+                                                {{ $userShiftToday->shift->shift_name }})</label>
+                                            <div class="ratio ratio-4x3 rounded overflow-hidden border">
+                                                <video id="video" autoplay style="width: 100%; height: auto;"></video>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="mb-3">
-                                        <img id="preview" style="display:none; max-width: 100%; margin-top: 10px;"
-                                            class="rounded border" />
-                                    </div>
+                                        <div class="mb-3">
+                                            <img id="preview" style="display:none; max-width: 100%; margin-top: 10px;"
+                                                class="rounded border" />
+                                        </div>
 
-                                    <input type="hidden" name="photo" id="photoInput">
-                                    <input type="hidden" name="tipe" value="masuk">
+                                        <input type="hidden" name="photo" id="photoInput">
+                                        <input type="hidden" name="tipe" value="masuk">
+                                        <input type="hidden" name="shift"
+                                            value="{{ $userShiftToday->shift->shift_name }}">
 
-                                    <div class="mb-3">
-                                        <button type="submit" class="btn btn-primary w-100" id="submitBtn" disabled>
-                                            Klik Untuk Presensi Kedatangan
-                                        </button>
+                                        <div class="mb-3">
+                                            <button type="submit" class="btn btn-primary w-100" id="submitBtn" disabled>
+                                                Klik Untuk Presensi Kedatangan Shift
+                                                {{ $userShiftToday->shift->shift_name }}
+                                            </button>
+                                        </div>
+                                    </form>
+                                @else
+                                    <div class="alert alert-warning">
+                                        Anda tidak berada dalam waktu shift untuk presensi.
                                     </div>
-                                </form>
+                                @endif
                             @endif
                         @elseif (isset($hasShiftToday) && !$hasShiftToday)
                             <div class="alert alert-warning">
@@ -65,10 +76,25 @@
                             </div>
                         @endif
 
-                        {{-- Tombol Lembur selalu muncul --}}
+                        {{-- Tombol Lembur per Shift --}}
                         <div class="mt-4">
-                            <a href="{{ route('lembur.create') }}" class="btn btn-outline-success w-100">
-                                Input Lembur
+                            <a href="{{ route('lembur.create', ['shift' => 1]) }}"
+                                class="btn btn-outline-success w-100 mb-2">
+                                Input Lembur Shift 1
+                            </a>
+                            <a href="{{ route('lembur.create', ['shift' => 2]) }}"
+                                class="btn btn-outline-primary w-100 mb-2">
+                                Input Lembur Shift 2
+                            </a>
+                            <a href="{{ route('lembur.create', ['shift' => 3]) }}" class="btn btn-outline-warning w-100">
+                                Input Lembur Shift 3
+                            </a>
+                        </div>
+
+                        {{-- Tombol Input Inval --}}
+                        <div class="mt-4">
+                            <a href="{{ route('inval.create') }}" class="btn btn-outline-dark w-100">
+                                Input Inval
                             </a>
                         </div>
 

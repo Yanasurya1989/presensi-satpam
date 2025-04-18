@@ -5,16 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Role extends Model
+class Inval extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'user_id',
+        'time_start',
+        'time_end',
+        'pengganti',
     ];
-
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
 }
