@@ -133,6 +133,7 @@
                             <a class="collapse-item" href="{{ url('/view_presence') }}">Presensi</a>
                             <a class="collapse-item" href="{{ url('/rekap-presensi') }}">Rekap Presensi</a>
                             <a class="collapse-item" href="{{ url('/lembur') }}">Lembur</a>
+                            <a class="collapse-item" href="{{ url('/inval') }}">Inval</a>
                         @break
 
                         @case('Super Admin')

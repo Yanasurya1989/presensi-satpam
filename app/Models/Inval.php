@@ -15,4 +15,9 @@ class Inval extends Model
         'time_end',
         'pengganti',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

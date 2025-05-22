@@ -57,9 +57,9 @@
             {{ $jam }} jam {{ $menit }} menit
         </p>
 
-
-
-
+        {{-- <p><strong>Total lembur bulan ini:</strong>
+            {{ $jam }} jam {{ $menit }} menit
+        </p> --}}
 
         {{-- <table class="table table-bordered table-striped mt-3">
             <thead class="thead-dark">

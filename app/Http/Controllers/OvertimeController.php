@@ -21,8 +21,6 @@ class OvertimeController extends Controller
         return view('layout.Presensi.lembur.index', compact('overtimes'));
     }
 
-    // app/Http/Controllers/LemburController.php
-
     public function index()
     {
         $overtimes = Overtime::with('user')->get();
@@ -67,8 +65,6 @@ class OvertimeController extends Controller
         return view('layout.Presensi.lembur.index', compact('groupedOvertime'));
     }
 
-
-
     public function create($shift)
     {
         $user = auth()->user();
@@ -84,7 +80,6 @@ class OvertimeController extends Controller
             'jadwalShift' => $jadwalShift,
         ]);
     }
-
 
     // update form lembur sesuai shift
     public function store(Request $request)
@@ -130,5 +125,51 @@ class OvertimeController extends Controller
         Overtime::create($data);
 
         return redirect()->route('lembur.index')->with('success', 'Data lembur shift ' . $request->shift . ' berhasil disimpan.');
+    }
+
+    public function storeIniUtkRekapAdmin(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'presensi_id' => 'nullable|exists:selfie_presensi,id',
+            'jam_in' => 'required|date',
+            'jam_out' => 'required|date|after:jam_in',
+            'shift' => 'required|in:1,2,3',
+        ]);
+
+        $presensi = Presence::find($request->presensi_id);
+        $tgl_presensi = $presensi->tgl_presensi ?? \Carbon\Carbon::now()->toDateString();
+
+        $start = \Carbon\Carbon::parse($request->jam_in);
+        $end = \Carbon\Carbon::parse($request->jam_out);
+        $total_minutes = $end->diffInMinutes($start);
+
+        $data = [
+            'user_id' => $request->user_id,
+            'presensi_id' => $request->presensi_id ?? null,
+            'tgl_presensi' => $tgl_presensi,
+            'jam_in' => $request->jam_in,
+            'jam_out' => $request->jam_out,
+            'poto_in' => $request->poto_in ?? null,
+            'poto_out' => $request->poto_out ?? null,
+        ];
+
+        if ($request->shift == 1) {
+            $data['start_time_shift1'] = $request->jam_in;
+            $data['end_time_shift1'] = $request->jam_out;
+            $data['total_minutes_shift1'] = $total_minutes;
+        } elseif ($request->shift == 2) {
+            $data['start_time_shift2'] = $request->jam_in;
+            $data['end_time_shift2'] = $request->jam_out;
+            $data['total_minutes_shift2'] = $total_minutes;
+        } elseif ($request->shift == 3) {
+            $data['start_time_shift3'] = $request->jam_in;
+            $data['end_time_shift3'] = $request->jam_out;
+            $data['total_minutes_shift3'] = $total_minutes;
+        }
+
+        \App\Models\Overtime::create($data);
+
+        return redirect()->route('lembur.index')->with('success', 'Data lembur berhasil ditambahkan.');
     }
 }

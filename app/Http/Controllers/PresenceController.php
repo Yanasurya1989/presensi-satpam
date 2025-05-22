@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Inval;
 use App\Models\Shift;
 use App\Models\Overtime;
 use App\Models\Presence;
@@ -142,7 +143,6 @@ class PresenceController extends Controller
         return view('layout.Presensi.rekap_admin_security', compact('rekap', 'useFilter', 'startDate', 'endDate'));
     }
 
-
     public function store(Request $request)
     {
         $user = auth()->user();
@@ -216,7 +216,6 @@ class PresenceController extends Controller
         ));
     }
 
-
     public function rekapHarian(Request $request)
     {
         $user = auth()->user();
@@ -235,5 +234,127 @@ class PresenceController extends Controller
             ->get();
 
         return view('layout.Presensi.rekap_harian', compact('presences', 'lembur', 'tanggal'));
+    }
+
+    public function rekap_admin_all()
+    {
+        $presensi = DB::table('presence')
+            ->join('users', 'users.id', '=', 'presence.user_id')
+            ->select(
+                'presence.tanggal as tanggal',
+                'users.name as nama',
+                DB::raw("'Presensi' as jenis"),
+                'presence.jam as jam_in',
+                'presence.jam_2 as jam_out',
+                DB::raw("NULL as shift"),
+                DB::raw("NULL as pengganti")
+            );
+
+        // Gabungkan semua shift lembur jadi satu
+        $lembur = DB::table('overtimes')
+            ->join('users', 'users.id', '=', 'overtimes.user_id')
+            ->select(
+                'overtimes.created_at as tanggal',
+                'users.name as nama',
+                DB::raw("'Lembur Shift 1' as jenis"),
+                'overtimes.start_time_shift1 as jam_in',
+                'overtimes.end_time_shift1 as jam_out',
+                DB::raw("'Shift 1' as shift"),
+                DB::raw("NULL as pengganti")
+            )
+            ->whereNotNull('start_time_shift1')
+            ->unionAll(
+                DB::table('overtimes')
+                    ->join('users', 'users.id', '=', 'overtimes.user_id')
+                    ->select(
+                        'overtimes.created_at as tanggal',
+                        'users.name as nama',
+                        DB::raw("'Lembur Shift 2' as jenis"),
+                        'overtimes.start_time_shift2 as jam_in',
+                        'overtimes.end_time_shift2 as jam_out',
+                        DB::raw("'Shift 2' as shift"),
+                        DB::raw("NULL as pengganti")
+                    )
+                    ->whereNotNull('start_time_shift2')
+            )
+            ->unionAll(
+                DB::table('overtimes')
+                    ->join('users', 'users.id', '=', 'overtimes.user_id')
+                    ->select(
+                        'overtimes.created_at as tanggal',
+                        'users.name as nama',
+                        DB::raw("'Lembur Shift 3' as jenis"),
+                        'overtimes.start_time_shift3 as jam_in',
+                        'overtimes.end_time_shift3 as jam_out',
+                        DB::raw("'Shift 3' as shift"),
+                        DB::raw("NULL as pengganti")
+                    )
+                    ->whereNotNull('start_time_shift3')
+            );
+
+        $inval = DB::table('invals')
+            ->join('users', 'users.id', '=', 'invals.user_id')
+            ->select(
+                'invals.created_at as tanggal',
+                'users.name as nama',
+                DB::raw("'Inval' as jenis"),
+                'invals.time_start as jam_in',
+                'invals.time_end as jam_out',
+                DB::raw("NULL as shift"),
+                'invals.pengganti'
+            );
+
+        $rekap = $presensi->unionAll($lembur)->unionAll($inval)
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        return view('layout.Presensi.admin.rekap.index', compact('rekap'));
+    }
+
+    public function pipot()
+    {
+        $presensi = Presence::with('user')->orderBy('tanggal')->get();
+        $overtimes = Overtime::all();
+        $invals = Inval::all();
+
+        $dataGabungan = $presensi->map(function ($p) use ($overtimes, $invals) {
+            $uid = $p->user_id;
+            $tgl = $p->tanggal;
+
+            // cari lembur berdasarkan user dan tanggal dari created_at
+            $lembur = $overtimes->first(function ($item) use ($uid, $tgl) {
+                return $item->user_id == $uid && Carbon::parse($item->created_at)->format('Y-m-d') == $tgl;
+            });
+
+            // cari inval berdasarkan user dan tanggal dari created_at
+            $inval = $invals->first(function ($item) use ($uid, $tgl) {
+                return $item->user_id == $uid && Carbon::parse($item->created_at)->format('Y-m-d') == $tgl;
+            });
+
+            return [
+                'tanggal' => $tgl,
+                'nama' => $p->user->name,
+                'presensi_masuk' => $p->jam,
+                'presensi_pulang' => $p->jam_2 ?? null,
+
+                'lembur_shift1' => ($lembur && $lembur->start_time_shift1 && $lembur->end_time_shift1)
+                    ? Carbon::parse($lembur->start_time_shift1)->format('H:i') . ' - ' . Carbon::parse($lembur->end_time_shift1)->format('H:i')
+                    : null,
+
+                'lembur_shift2' => ($lembur && $lembur->start_time_shift2 && $lembur->end_time_shift2)
+                    ? Carbon::parse($lembur->start_time_shift2)->format('H:i') . ' - ' . Carbon::parse($lembur->end_time_shift2)->format('H:i')
+                    : null,
+
+                'lembur_shift3' => ($lembur && $lembur->start_time_shift3 && $lembur->end_time_shift3)
+                    ? Carbon::parse($lembur->start_time_shift3)->format('H:i') . ' - ' . Carbon::parse($lembur->end_time_shift3)->format('H:i')
+                    : null,
+
+                'inval' => ($inval && $inval->time_start && $inval->time_end)
+                    ? Carbon::parse($inval->time_start)->format('H:i') . ' - ' . Carbon::parse($inval->time_end)->format('H:i') . ' (Gantikan: ' . $inval->pengganti . ')'
+                    : null,
+            ];
+        });
+
+        return view('layout.Presensi.admin.rekap_pipot.pivot', compact('dataGabungan'));
     }
 }

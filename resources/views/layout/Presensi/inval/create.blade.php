@@ -21,6 +21,8 @@
         <form action="{{ route('inval.store') }}" method="POST">
             @csrf
 
+            <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+
             <div class="mb-3">
                 <label for="time_start" class="form-label">Waktu Mulai</label>
                 <input type="time" class="form-control" name="time_start" required>
@@ -41,8 +43,8 @@
                 </select>
             </div>
 
-            {{-- <pre>{{ print_r($errors->all(), true) }}</pre> --}}
             <button type="submit" class="btn btn-primary w-100">Simpan</button>
         </form>
+
     </div>
 @endsection

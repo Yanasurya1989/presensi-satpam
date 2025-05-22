@@ -1,25 +1,27 @@
 <?php
 
-// use App\Models\Kehadiran;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
-// use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\Rekapcontroller;
 use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\LemburController;
 use App\Http\Controllers\ReportController;
-// use App\Http\Controllers\PresensiController;
-use App\Http\Controllers\KehadiranController;
-use App\Http\Controllers\AttendanceController;
-// use App\Http\Controllers\PresensiScController;
-use App\Exports\UsersExport;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Http\Controllers\ShiftAssignmentController;
 use App\Http\Controllers\OvertimeController;
-use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\PresenceController;
+use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\KehadiranController;
+use App\Http\Controllers\ShiftAssignmentController;
+
+// update lembur
+// Route::resource('lembur', \App\Http\Controllers\LemburController::class);
+Route::resource('lembur', \App\Http\Controllers\LemburController::class)->except(['show']);
+Route::get('/lembur/export', [LemburController::class, 'export'])->name('lembur.export');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/inval/create', [App\Http\Controllers\InvalController::class, 'create'])->name('inval.create');
@@ -27,62 +29,44 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/inval', [App\Http\Controllers\InvalController::class, 'index'])->name('inval.index');
 });
 
-
 Route::post('/presence', [PresenceController::class, 'store'])->name('presence.store');
-// Route::get('/view_presence', [PresenceController::class, 'index']);
-// Route::get('/view_presence', [ShiftAssignmentController::class, 'presensiForm'])->name('presence.form');
 Route::get('/view_presence', [PresenceController::class, 'presensiForm'])->name('presence.form');
 Route::get('/rekap-presensi', [PresenceController::class, 'rekap'])->name('presence.rekap');
 Route::get('/rekap-admin', [PresenceController::class, 'rekapAdmin'])->name('presence.rekapAdmin');
 Route::get('/rekap/export', [PresenceController::class, 'export'])->name('rekap.export');
 Route::get('/rekap/harian', [PresenceController::class, 'rekapHarian'])->name('rekap.harian');
+Route::get('/admin/rekap', [PresenceController::class, 'rekap_admin_all'])->middleware('auth');
+Route::get('/admin/rekap-pivot', [PresenceController::class, 'pipot'])->middleware('auth');
 
 
-
-// akhir pengulangan pembuatan presensi
 
 Route::middleware(['auth'])->group(function () {
-    // Route::post('/presensi/store', [PresensiController::class, 'store'])->name('attendance.store');
     Route::post('/attendance/store', [PresensiController::class, 'store'])->name('attendance.store');
-    // Route::middleware('auth:sanctum')->post('/attendance', [PresensiController::class, 'store'])->name('attendance.store');
-    // Route::middleware('auth:sanctum')->get('/attendance/report', [PresensiController::class, 'report']);
 });
 
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/lembur', [OvertimeController::class, 'index'])->name('lembur.index');
-    // Route::get('/lembur/create', [OvertimeController::class, 'create'])->name('lembur.create');
-    Route::post('/lembur', [OvertimeController::class, 'store'])->name('lembur.store');
-    Route::get('/lembur/create/{shift}', [OvertimeController::class, 'create'])->name('lembur.create');
-});
-
-
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/lembur', [OvertimeController::class, 'index'])->name('lembur.index');
+//     Route::post('/lembur', [OvertimeController::class, 'store'])->name('lembur.store');
+//     Route::get('/lembur/create/{shift}', [OvertimeController::class, 'create'])->name('lembur.create');
+// });
 
 Route::get('/cek-timezone', function () {
     return date('Y-m-d H:i:s') . ' - ' . date_default_timezone_get();
 });
 
-
 Route::get('/shift-assignment', [ShiftAssignmentController::class, 'index'])->name('shift.assignment');
 Route::post('/shift-assign', [ShiftAssignmentController::class, 'assign'])->name('shift.assign');
 Route::post('/shift-assign', [ShiftAssignmentController::class, 'store'])->name('shift.assign');
 Route::delete('/shift-remove/{userId}/{shiftId}/{shiftDate}', [ShiftAssignmentController::class, 'remove'])->name('shift.remove');
-// Route::delete('/shift-remove/{userId}/{shiftId}/{weekStart}/{weekEnd}', [ShiftController::class, 'remove'])->name('shift.remove');
 Route::delete('/user-shifts/{id}', [ShiftAssignmentController::class, 'destroy'])->name('user-shifts.destroy');
 Route::get('/user-shifts/{id}/edit', [ShiftAssignmentController::class, 'edit'])->name('user-shifts.edit');
 Route::put('/user-shifts/{id}', [ShiftAssignmentController::class, 'update'])->name('user-shifts.update');
-// Route::get('/user-shifts/{id}/edit', [ShiftAssignmentController::class, 'edit'])->name('user-shifts.edit');
-// Route::put('/user-shifts/{id}', [ShiftAssignmentController::class, 'update'])->name('user-shifts.update');
-
-
 
 Route::get('/export-users', function () {
     return Excel::download(new UsersExport, 'users.xlsx');
 });
 
-
 Route::get('/export', [ReportController::class, 'export'])->name('export');
-// Route::get('/export-excel', [ReportController::class, 'export'])->name('report.export');
 
 Route::get('/login', [AuthController::class, 'login'])->name('login')->middleware('guest');
 Route::post('/login', [AuthController::class, 'authenticate']);
@@ -103,9 +87,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/report/store', [ReportController::class, 'store']);
 });
 
-
-// Route::post('/report/store', [ReportController::class, 'store']);
-
 // User
 Route::get('/users', [UserController::class, 'index']);
 Route::post('/users/store', [UserController::class, 'store']);
@@ -115,10 +96,8 @@ Route::post('/user/update/{user}', [UserController::class, 'update']);
 
 // Report admin
 Route::get('/report-admin', [Rekapcontroller::class, 'index']);
-// Route::get('/rekap', [Rekapcontroller::class, 'index']);
 
 // Presensi SC
-// Route::get('/presensi-sc', [PresensiScController::class, 'index']);
 Route::get('/presensi-sc', [KehadiranController::class, 'index'])->name('presensi_sc');
 Route::post('/simpan-masuk', [KehadiranController::class, 'store']);
 
@@ -135,8 +114,6 @@ Route::post('/save-timestamp', [KehadiranController::class, 'create'])->name('sa
 Route::get('/shifts', [ShiftController::class, 'index']);
 Route::get('/shiftsforschedule', [ShiftController::class, 'siftforschedule']);
 
-
-
 Route::middleware(['auth:sanctum', 'admin'])->get('/admin/attendance', [AdminController::class, 'index']);
 
 // Presensi image validation
@@ -147,10 +124,4 @@ Route::post('/presensi/kirim_hadir', [KehadiranController::class, 'kirim_hadir']
 Route::post('/submit', [AjaxController::class, 'submit'])->name('ajax.submit');
 
 // Webcam Capture
-// Route::get('/capture', function () {
-//     return view('capture/capture');
-// })->name('capture.form');
-
-// Route::post('/capture', [PhotoController::class, 'capture']);
-// Route::get('/report-admin', [ReportController::class, 'index'])->name('layout.admin.rekap_admin');
 Route::get('/admin-rekap', [Rekapcontroller::class, 'index']);

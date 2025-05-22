@@ -49,7 +49,7 @@
                 <form method="POST" action="{{ route('lembur.store') }}">
                     @csrf
 
-                    <!-- Nama User (readonly) -->
+                    <!-- Nama User -->
                     <div class="mb-3">
                         <label for="user_name" class="form-label">Nama</label>
                         <input type="text" id="user_name" class="form-control" value="{{ Auth::user()->name }}" readonly>
@@ -63,34 +63,25 @@
                             readonly>
                     </div>
 
-                    <!-- ID User (hidden) -->
+                    <!-- Hidden Inputs -->
                     <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-
-                    <!-- Shift -->
                     <input type="hidden" name="shift" value="{{ $shift }}">
+                    <input type="hidden" name="presensi_id" value="{{ $presensiId ?? '' }}">
 
-
-                    <!-- ID User (hidden) -->
-                    <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-
-                    <!-- Shift -->
-                    <input type="hidden" name="shift" value="{{ $shift }}">
-
-                    <!-- Start Time -->
+                    <!-- Jam Masuk -->
                     <div class="mb-3">
-                        <label for="start_time" class="form-label">Start Time</label>
-                        <input type="datetime-local" name="start_time" id="start_time" class="form-control" required>
+                        <label for="jam_in" class="form-label">Start Time</label>
+                        <input type="datetime-local" name="start_time" id="jam_in" class="form-control" required>
                     </div>
 
-                    <!-- End Time -->
+                    <!-- Jam Keluar -->
                     <div class="mb-3">
-                        <label for="end_time" class="form-label">End Time</label>
-                        <input type="datetime-local" name="end_time" id="end_time" class="form-control" required>
+                        <label for="jam_out" class="form-label">End Time</label>
+                        <input type="datetime-local" name="end_time" id="jam_out" class="form-control" required>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Simpan Lembur Shift {{ $shift }}</button>
                 </form>
-
 
             </div>
         </div>

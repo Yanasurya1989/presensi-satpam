@@ -61,4 +61,28 @@ class InvalController extends Controller
 
         return redirect()->back()->with('success', 'Data Inval berhasil disimpan!');
     }
+
+    public function storeIniUtkRekapDiadmin(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'presensi_id' => 'nullable|exists:selfie_presensi,id',
+            'time_start' => 'required',
+            'time_end' => 'required',
+            'pengganti' => 'required|string',
+        ]);
+
+        $presensi = Presence::find($request->presensi_id);
+
+        \App\Models\Inval::create([
+            'user_id' => $request->user_id,
+            'presensi_id' => $request->presensi_id ?? null,
+            'time_start' => $request->time_start,
+            'time_end' => $request->time_end,
+            'pengganti' => $request->pengganti,
+            'tgl_presensi' => $presensi->tgl_presensi ?? \Carbon\Carbon::now()->toDateString(),
+        ]);
+
+        return redirect()->route('inval.index')->with('success', 'Data inval berhasil ditambahkan.');
+    }
 }

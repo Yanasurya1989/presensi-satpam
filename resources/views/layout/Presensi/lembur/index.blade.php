@@ -40,7 +40,7 @@
                                             : '-' }}
                                     </td>
                                 @endfor
-                                <td>
+                                {{-- <td>
                                     @php
                                         $totalMinutes = 0;
                                         foreach ($shifts as $shift) {
@@ -50,7 +50,21 @@
                                         $minutes = $totalMinutes % 60;
                                     @endphp
                                     {{ $hours }} jam {{ $minutes }} menit
+                                </td> --}}
+                                <td>
+                                    @php
+                                        $totalMinutes = 0;
+                                        foreach ($shifts as $shift) {
+                                            $totalMinutes += $shift['total_minutes'] ?? 0;
+                                        }
+
+                                        $totalMinutes = abs($totalMinutes); // ini kuncinya
+                                        $hours = floor($totalMinutes / 60);
+                                        $minutes = $totalMinutes % 60;
+                                    @endphp
+                                    {{ $hours }} jam {{ $minutes }} menit
                                 </td>
+
                             </tr>
                         @empty
                             <tr>
