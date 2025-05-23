@@ -16,6 +16,19 @@ use App\Http\Controllers\PresenceController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\KehadiranController;
 use App\Http\Controllers\ShiftAssignmentController;
+use App\Exports\PresenceExport;
+
+Route::get('/presence/export', function (Illuminate\Http\Request $request) {
+    $request->validate([
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+    ]);
+
+    $fileName = 'Rekap_Presensi_' . now()->format('Ymd_His') . '.xlsx';
+
+    return Excel::download(new PresenceExport($request->start_date, $request->end_date), $fileName);
+})->name('presence.export');
+
 
 // update lembur
 // Route::resource('lembur', \App\Http\Controllers\LemburController::class);
@@ -38,6 +51,12 @@ Route::get('/rekap/harian', [PresenceController::class, 'rekapHarian'])->name('r
 Route::get('/admin/rekap', [PresenceController::class, 'rekap_admin_all'])->middleware('auth');
 Route::get('/admin/rekap-pivot', [PresenceController::class, 'pipot'])->middleware('auth');
 
+// routes/web.php
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/presensi', [PresenceController::class, 'indexAdmin'])->name('admin.presensi.index');
+    Route::get('/admin/presensi/{id}/edit', [PresenceController::class, 'edit'])->name('admin.presensi.edit');
+    Route::delete('/admin/presensi/{id}', [PresenceController::class, 'destroy'])->name('admin.presensi.destroy');
+});
 
 
 Route::middleware(['auth'])->group(function () {

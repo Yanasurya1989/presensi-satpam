@@ -4,7 +4,16 @@
     <div class="container">
         <h2 class="mb-4">Rekap Presensiku</h2>
 
-        <form action="{{ route('presence.rekap') }}" method="GET" class="row mb-3">
+        @if (request('start_date') && request('end_date'))
+            <p><strong>Rentang Tanggal:</strong>
+                {{ \Carbon\Carbon::parse(request('start_date'))->translatedFormat('d F Y') }}
+                s.d.
+                {{ \Carbon\Carbon::parse(request('end_date'))->translatedFormat('d F Y') }}
+            </p>
+        @endif
+
+
+        {{-- <form action="{{ route('presence.rekap') }}" method="GET" class="row mb-3">
             <div class="col-md-3">
                 <label for="month">Bulan (mulai 25):</label>
                 <select name="month" id="month" class="form-control">
@@ -30,7 +39,31 @@
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary">Filter</button>
             </div>
+        </form> --}}
+
+        <form action="{{ route('presence.rekap') }}" method="GET" class="row mb-3">
+            <div class="col-md-3">
+                <label for="start_date">Mulai Tanggal:</label>
+                <input type="date" name="start_date" id="start_date" class="form-control"
+                    value="{{ request('start_date') }}">
+            </div>
+            <div class="col-md-3">
+                <label for="end_date">Sampai Tanggal:</label>
+                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date') }}">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
         </form>
+
+        @if (request('start_date') && request('end_date'))
+            <div class="mb-3">
+                <a href="{{ route('presence.export', ['start_date' => request('start_date'), 'end_date' => request('end_date')]) }}"
+                    class="btn btn-success">
+                    Export Excel
+                </a>
+            </div>
+        @endif
 
         {{-- <h5>Jumlah Hari Hadir: {{ $totalHariPerUser[auth()->id()] ?? 0 }} Hari</h5> --}}
 

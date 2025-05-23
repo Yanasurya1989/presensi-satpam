@@ -37,6 +37,14 @@ class PresenceController extends Controller
         return Excel::download(new RekapPresensiExport($month, $year), $filename);
     }
 
+    public function indexAdmin()
+    {
+        // Ambil semua data presensi
+        $presences = Presence::with('user')->orderBy('tanggal', 'desc')->get();
+
+        return view('admin.presensi.index', compact('presences'));
+    }
+
     public function index()
     {
         $user = auth()->user();
@@ -52,7 +60,7 @@ class PresenceController extends Controller
     }
 
     // nambahin field lembur
-    public function rekap(Request $request)
+    public function rekapDigantiFilter(Request $request)
     {
         $user = auth()->user();
 
@@ -91,6 +99,27 @@ class PresenceController extends Controller
             'lembur' // <- kirim ke blade
         ));
     }
+
+    public function rekap(Request $request)
+    {
+        $query = Presence::query();
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('tanggal', [$request->start_date, $request->end_date]);
+        }
+
+        $presences = $query->get();
+
+        $totalHariPerUser = $presences->groupBy('user_id')->map->count();
+
+        // Hitung lembur berdasarkan tanggal
+        $lembur = Overtime::whereBetween('tgl_presensi', [$request->start_date, $request->end_date])
+            ->get()
+            ->groupBy('tgl_presensi');
+
+        return view('layout.Presensi.rekap_security', compact('presences', 'totalHariPerUser', 'lembur'));
+    }
+
 
     public function rekapAdmin(Request $request)
     {
@@ -356,5 +385,19 @@ class PresenceController extends Controller
         });
 
         return view('layout.Presensi.admin.rekap_pipot.pivot', compact('dataGabungan'));
+    }
+
+    public function edit($id)
+    {
+        $presence = Presence::findOrFail($id);
+        return view('admin.presensi.edit', compact('presence'));
+    }
+
+    public function destroy($id)
+    {
+        $presence = Presence::findOrFail($id);
+        $presence->delete();
+
+        return redirect()->route('admin.presensi.index')->with('success', 'Data berhasil dihapus');
     }
 }
