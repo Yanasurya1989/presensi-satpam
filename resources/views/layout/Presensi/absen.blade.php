@@ -77,7 +77,7 @@
                         @endif
 
                         {{-- Tombol Lembur per Shift --}}
-                        <div class="mt-4">
+                        {{-- <div class="mt-4">
                             <a href="{{ route('lembur.create', ['shift' => 1]) }}"
                                 class="btn btn-outline-success w-100 mb-2">
                                 Input Lembur Shift 1
@@ -89,8 +89,13 @@
                             <a href="{{ route('lembur.create', ['shift' => 3]) }}" class="btn btn-outline-warning w-100">
                                 Input Lembur Shift 3
                             </a>
-                        </div>
+                        </div> --}}
 
+                        <div class="mt-4">
+                            <a href="{{ route('lembur.create') }}" class="btn btn-outline-success w-100">
+                                Input Lembur
+                            </a>
+                        </div>
                         {{-- Tombol Input Inval --}}
                         <div class="mt-4">
                             <a href="{{ route('inval.create') }}" class="btn btn-outline-dark w-100">

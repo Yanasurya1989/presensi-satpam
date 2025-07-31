@@ -92,9 +92,11 @@ class LemburController extends Controller
             ->whereYear('tanggal', now()->year)
             ->get();
 
-        return view('lembur.index', [
+        $totalLembur = $lemburUser->sum('total_lembur');
+        return view('lembur.index_user', [
             'role' => 'user',
             'lemburUser' => $lemburUser,
+            'totalLembur' => $totalLembur,
         ]);
     }
 
@@ -158,7 +160,7 @@ class LemburController extends Controller
         return redirect()->route('lembur.index')->with('success', 'Data lembur berhasil ditambahkan.');
     }
 
-    public function update(Request $request, Lembur $lembur)
+    public function updateProsesGantiBagianUpdateViewPersonal(Request $request, Lembur $lembur)
     {
         $validated = $request->validate([
             'tanggal' => 'required|date',
@@ -176,6 +178,27 @@ class LemburController extends Controller
         $lembur->update($validated);
 
         return redirect()->route('lembur.index')->with('success', 'Data lembur berhasil diupdate.');
+    }
+
+    public function update(Request $request, Lembur $lembur)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'tanggal' => 'required|date',
+            'mulai_lembur_satu' => 'nullable|date_format:H:i',
+            'akhir_lembur_satu' => 'nullable|date_format:H:i',
+            'mulai_lembur_dua' => 'nullable|date_format:H:i',
+            'akhir_lembur_dua' => 'nullable|date_format:H:i',
+            'mulai_lembur_tiga' => 'nullable|date_format:H:i',
+            'akhir_lembur_tiga' => 'nullable|date_format:H:i',
+        ]);
+
+        $total = $this->calculateTotalLembur($validated);
+        $validated['total_lembur'] = $total;
+
+        $lembur->update($validated);
+
+        return redirect()->route('lembur.index_user')->with('success', 'Data lembur berhasil diupdate.');
     }
 
     public function destroy(Lembur $lembur)

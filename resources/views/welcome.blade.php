@@ -60,6 +60,9 @@
             Selamat datang {{ Auth::user()->name }}, anda login sebagai {{ Auth::user()->role->name }}
         </h1>
 
+        {{-- tes update --}}
+        <p>tes</p>
+
         <!-- Menu Section -->
         <div class="row">
             @if (Auth::user()->role->name == 'Super Admin' || Auth::user()->role->name == 'Kabid 4')

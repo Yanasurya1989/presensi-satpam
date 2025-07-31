@@ -229,6 +229,13 @@ class PresenceController extends Controller
                 $endTime->addDay();
             }
 
+            // dd([
+            //     'now' => $now->toDateTimeString(),
+            //     'start' => $startTime->toDateTimeString(),
+            //     'end' => $endTime->toDateTimeString(),
+            //     'between' => $now->between($startTime, $endTime),
+            // ]);
+
             $isShiftNow = $now->between($startTime, $endTime);
         }
 
