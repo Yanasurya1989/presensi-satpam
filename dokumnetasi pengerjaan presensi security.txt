@@ -1,0 +1,12 @@
+Update Presensi Security :
+1. Database pindah ke db_presensi_security(beda di underscor dan huruf e) dengan import dari databse yang diupload ke hosting
+2. View presensi yang dipake yang bernama presensi_masuk.blade.php
+3. controller yang dipake OvertimeController untuk lembur
+4. membuat tabel baru untuk presensi bernama presensis pake es
+5. ganti proses presensi, nambah tabel bernama presensi, model bernama Presensi php artisan make:controller PresensiController
+7. php artisan make:controller PresenceController
+8. tabel untuk penyimpanan presensi dipindah ke db_presensi_security&table=presence&pos=0
+
+
+
+
